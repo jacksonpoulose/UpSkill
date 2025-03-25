@@ -1,16 +1,15 @@
-import { useEffect, useState } from "react";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./components/common/Home";
 
-function App() {
-  const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    fetch("http://localhost:3000/api/test") 
-      .then((res) => res.json())
-      .then((data) => setMessage(data.message))
-      .catch((err) => console.error("Error:", err));
-  }, []);
-
-  return <h1>{message || "Connecting to backend..."}</h1>;
-}
+const App = () => {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </Router>
+  );
+};
 
 export default App;
