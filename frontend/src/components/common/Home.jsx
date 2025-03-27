@@ -1,42 +1,61 @@
 import React from "react";
+import { FaFacebookF, FaInstagram, FaPhoneAlt } from "react-icons/fa";
 
 const Home = () => {
   return (
-    <div className="min-h-screen bg-white text-red-600 flex flex-col items-center">
+    <div className="min-h-screen bg-[#F8F9FA] text-red-600 flex flex-col items-center">
+
       {/* Navbar */}
-      <nav className="w-full py-4 px-6 flex justify-between items-center bg-red-600 text-white shadow-md">
-        <h1 className="text-2xl font-bold">UpSkill</h1>
-        <div className="space-x-4">
-          <button className="px-4 py-2 bg-white text-red-600 font-semibold rounded-lg hover:bg-gray-100 transition">
-            Sign Up
-          </button>
-          <button className="px-4 py-2 bg-white text-red-600 font-semibold rounded-lg hover:bg-gray-100 transition">
-            Login
-          </button>
-          <button className="px-4 py-2 bg-yellow-400 text-red-800 font-semibold rounded-lg hover:bg-yellow-300 transition">
-            Become a Mentor
-          </button>
+      <nav className="w-full h-[40px] px-6 flex justify-between items-center bg-amber-50 text-gray-800 ">
+      {/* Left Side - Social Icons & Phone */}
+      <div className="flex items-center space-x-4">
+        <FaInstagram className="text-gray-600 hover:text-red-500 cursor-pointer" size={20} />
+        <FaFacebookF className="text-gray-600 hover:text-blue-600 cursor-pointer" size={20} />
+        
+        {/* Vertical Line */}
+        <div className="h-6 w-[1.5px] bg-gray-300"></div>
+        
+        {/* Phone Icon & Number */}
+        <div className="flex items-center space-x-2">
+          <FaPhoneAlt className="text-gray-600" size={18} />
+          <span className="text-gray-700 font-semibold">+91 98765 43210</span>
         </div>
-      </nav>
-      <nav className="w-full py-4 px-6 flex justify-between items-center bg-red-600 text-white shadow-md">
-        <h1 className="text-2xl font-bold">UpSkill</h1>
-        <div className="space-x-4">
-          <button className="px-4 py-2 bg-white text-red-600 font-semibold rounded-lg hover:bg-gray-100 transition">
-            Sign Up
-          </button>
-          <button className="px-4 py-2 bg-white text-red-600 font-semibold rounded-lg hover:bg-gray-100 transition">
-            Login
-          </button>
-          <button className="px-4 py-2 bg-yellow-400 text-red-800 font-semibold rounded-lg hover:bg-yellow-300 transition">
-            Become a Mentor
-          </button>
-        </div>
-      </nav>
+      </div>
+
+      {/* Right Side - Sign Up Button */}
+      <button className="px-4 py-1 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">
+        Sign Up
+      </button>
+    </nav>
+    <nav className="w-full h-[60px] px-6 flex justify-between items-center bg-white text-gray-800">
+      {/* Left Side - Logo */}
+      <h1 className="text-2xl font-bold text-red-600">UpSkill</h1>
+
+      {/* Center - Navigation Links */}
+      <div className="flex space-x-8 text-lg font-medium">
+        <a href="#" className="hover:text-red-600 transition">Home</a>
+        <a href="#" className="hover:text-red-600 transition">Courses</a>
+        <a href="#" className="hover:text-red-600 transition">About</a>
+        <a href="#" className="hover:text-red-600 transition">Contact</a>
+        <a href="#" className="hover:text-red-600 transition">Blog</a>
+
+      </div>
+
+      {/* Right Side - Buttons */}
+      <div className="space-x-4">
+        <button className="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition">
+          Login
+        </button>
+        <button className="px-4 py-2 bg-blue-950 text-white font-semibold rounded-lg ">
+          Become a Mentor
+        </button>
+      </div>
+    </nav>
 
       {/* Banner Section */}
-      <div className="relative w-full max-w-5xl mt-10">
+      <div className="relative h-100 w-full mt-1 bg-blue-950">
         <img
-          src="https://source.unsplash.com/1200x500/?education,learning"
+          src="https://t3.ftcdn.net/jpg/04/00/77/64/360_F_400776431_5JxdDYRr1mn9yISiUFMPcLtLp3zt6NA1.jpg"
           alt="Banner"
           className="w-full h-64 object-cover rounded-lg shadow-lg"
         />
@@ -50,7 +69,7 @@ const Home = () => {
       {/* Features Section */}
       <div className="mt-12 grid md:grid-cols-3 gap-6 text-center">
         <div className="p-6 bg-red-100 rounded-xl shadow-lg">
-          <h2 className="text-xl font-bold">MERN Stack</h2>
+          <h2 className="text-xl font-bold">MERN- Full stack</h2>
           <p className="mt-2 text-gray-600">Master MongoDB, Express, React, and Node.js.</p>
         </div>
         <div className="p-6 bg-red-100 rounded-xl shadow-lg">
