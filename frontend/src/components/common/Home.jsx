@@ -69,7 +69,7 @@ const Home = () => {
       {/* Features Section */}
       <div className="mt-12 grid md:grid-cols-3 gap-6 text-center">
         <div className="p-6 bg-red-100 rounded-xl shadow-lg">
-          <h2 className="text-xl font-bold">MERN Stack</h2>
+          <h2 className="text-xl font-bold">MERN- Full stack</h2>
           <p className="mt-2 text-gray-600">Master MongoDB, Express, React, and Node.js.</p>
         </div>
         <div className="p-6 bg-red-100 rounded-xl shadow-lg">
