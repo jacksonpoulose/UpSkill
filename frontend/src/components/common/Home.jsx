@@ -1,5 +1,6 @@
 import React from "react";
 import { FaFacebookF, FaInstagram, FaPhoneAlt } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   return (
@@ -23,9 +24,11 @@ const Home = () => {
       </div>
 
       {/* Right Side - Sign Up Button */}
-      <button className="px-4 py-1 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">
-        Sign Up
-      </button>
+      <Link to="/signup">
+          <button className="px-4 py-1 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">
+            Sign Up
+          </button>
+        </Link>
     </nav>
     <nav className="w-full h-[60px] px-6 flex justify-between items-center bg-white text-gray-800">
       {/* Left Side - Logo */}
@@ -43,12 +46,16 @@ const Home = () => {
 
       {/* Right Side - Buttons */}
       <div className="space-x-4">
+        <Link to='/login'>
         <button className="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition">
           Login
         </button>
+        </Link>
+        <Link to='/mentor'>
         <button className="px-4 py-2 bg-blue-950 text-white font-semibold rounded-lg ">
           Become a Mentor
         </button>
+        </Link>
       </div>
     </nav>
 
