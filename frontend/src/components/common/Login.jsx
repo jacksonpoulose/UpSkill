@@ -11,7 +11,7 @@ const Login = () => {
     setError("");
 
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/login", {
+      const response = await axios.post("http://localhost:3000/api/auth/login", {
         email,
         password,
       });
@@ -54,7 +54,7 @@ const Login = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+            className="w-full bg-blue-950 text-white py-2 rounded-lg hover:bg-blue-950 transition"
           >
             Login
           </button>
