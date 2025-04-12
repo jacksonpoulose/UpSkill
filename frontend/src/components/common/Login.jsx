@@ -1,28 +1,23 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../../redux/userSlice"; // adjust path if needed
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { loading, error } = useSelector((state) => state.user);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError("");
 
-    try {
-      const response = await axios.post("http://localhost:3000/api/auth/login", {
-        email,
-        password,
-      });
+    const result = await dispatch(loginUser({ email, password }));
 
-      if (response.data.token) {
-        localStorage.setItem("token", response.data.token);
-        alert("Login successful!");
-        window.location.href = "/dashboard"; // Redirect after login
-      }
-    } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+    if (result.meta.requestStatus === "fulfilled") {
+      navigate("/");
     }
   };
 
@@ -54,9 +49,10 @@ const Login = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-950 text-white py-2 rounded-lg hover:bg-blue-950 transition"
+            className="w-full bg-blue-950 text-white py-2 rounded-lg hover:bg-blue-900 transition"
+            disabled={loading}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
         <p className="mt-4 text-center text-gray-600">
