@@ -17,13 +17,6 @@ const registerValidation = (data) => {
       "string.empty": "Password is required",
       "any.required": "Password is required",
     }),
-    confirmPassword: Joi.string()
-      .valid(Joi.ref("password"))
-      .required()
-      .messages({
-        "any.only": "Passwords must match",
-        "string.empty": "Confirm password is required",
-      }),
   });
   return schema.validate(data);
 };

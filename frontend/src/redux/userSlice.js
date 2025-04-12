@@ -5,7 +5,7 @@ export const loginUser = createAsyncThunk(
   "user/loginUser",
   async ({ email, password }, { rejectWithValue }) => {
     try {
-      const response = await fetch("http://localhost:3000/api/auth/login", {
+      const response = await fetch("http://localhost:3000/api/v1/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -26,12 +26,15 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// Slice for user-related actions
+// Safely retrieve user and token from localStorage
+const storedUser = localStorage.getItem("user");
+const storedToken = localStorage.getItem("token");
+
 const userSlice = createSlice({
   name: "user",
   initialState: {
-    user: null,
-    token: null,
+    user: storedUser && storedUser !== "undefined" ? JSON.parse(storedUser) : null,
+    token: storedToken && storedToken !== "undefined" ? storedToken : null,
     error: null,
     loading: false,
   },
@@ -39,9 +42,10 @@ const userSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.token = null;
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
     },
     updateUserProfile: (state, action) => {
-      // Update the user's profile data (like profile image)
       state.user = { ...state.user, ...action.payload };
     },
   },
@@ -56,6 +60,9 @@ const userSlice = createSlice({
         state.user = action.payload.user;
         state.token = action.payload.token;
         state.error = null;
+
+        localStorage.setItem("user", JSON.stringify(action.payload.user));
+        localStorage.setItem("token", action.payload.token);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
