@@ -44,6 +44,40 @@ const registerController = async (req, res) => {
   }
 };
 
+// const loginController = async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
+//     console.log(req.body);
+
+//     const { error } = loginValidation(req.body);
+//     if (error) {
+//       return res.status(400).json({ message: error.details[0].message });
+//     }
+
+//     const user = await User.findOne({ email });
+//     if (!user) return res.status(400).json({ message: "invalid credentials" });
+
+//     const isMatch = await comparePassword(password, user.password);
+//     if (!isMatch)
+//       return res.status(400).json({ message: "invalid credentials" });
+
+//     const token = JWT.sign(
+//       { id: user._id, role: user.role },
+//       process.env.JWT_SECRET,
+//       { expiresIn: "1d" }
+//     );
+
+//     res.json({ token });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send({
+//       success: false,
+//       message: "error in login",
+//       error,
+//     });
+//   }
+// };
+
 const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -67,7 +101,16 @@ const loginController = async (req, res) => {
       { expiresIn: "1d" }
     );
 
-    res.json({ token });
+    // ✅ Send back token + user details (without password)
+    res.json({ 
+      token, 
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      }
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send({
