@@ -39,4 +39,17 @@ const getIndividualCourse = (req,res)=>{
   
 }
 
-module.exports = {getDashboard,getCoursesList,getStudentsList,getIndividualCourse,getIndividualStudent,postAddTask,postEditTask,postDeleteTask,getIndividualTask}
+const getIndividualStudent = (req,res)=>{
+    try{
+        res.status(200).json({message:"welcome to individual student"})
+    }catch(error){
+        console.log(error);
+        res.status(404).json({message:"page not found"})
+    }
+  
+}
+
+
+module.exports = {getDashboard,getCoursesList,getStudentsList,getIndividualCourse,
+    getIndividualStudent
+    }

@@ -1,4 +1,5 @@
 const course = require("../../models/courseModel");
+
 const getDashboard = (req, res) => {
   try {
     res.status(200).json({ message: "welcome to student dashboard" });
@@ -8,7 +9,7 @@ const getDashboard = (req, res) => {
   }
 };
 
-const getSyllabus = async (req, res) => {
+const getTasksheet = async (req, res) => {
   try {
     const course = await course.findOne({});
     res.status(200).json({ message: "welcome to student syllabus" });
@@ -18,4 +19,4 @@ const getSyllabus = async (req, res) => {
   }
 };
 
-module.exports = { getDashboard, getSyllabus };
+module.exports = { getDashboard, getTasksheet };
