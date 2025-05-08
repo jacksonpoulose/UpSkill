@@ -1,5 +1,6 @@
 const Users = require("../../models/userModel");
 const Courses = require("../../models/courseModel");
+
 const getDashboard = (req, res) => {
   try {
     res.status(200).json({ message: "welcome to admin dashboard" });
@@ -139,13 +140,4 @@ const getIndividualMentor = async (req, res) => {
 
 module.exports = {
   getDashboard,
-  getCourses,
-  getStudents,
-  getMentors,
-  postAddCourse,
-  getIndividualCourse,
-  postEditCourse,
-  postDeleteCourse,
-  getIndividualStudent,
-  getIndividualMentor,
 };

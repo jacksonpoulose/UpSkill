@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const {getDashboard,
-    getSyllabus 
+const {getDashboard, 
+    getTasksheet
 } = require("../../controllers/student/studentController");
 const { verifyToken, checkRole } = require("../../middlewares/authMiddleware");
 
 router.get("/dashboard", verifyToken, checkRole(["student"]),getDashboard);
-router.get("syllabus", verifyToken, checkRole(["student"]),getSyllabus); 
+router.get("/tasksheet", verifyToken, checkRole(["student"]),getTasksheet); 
 
 module.exports = router;

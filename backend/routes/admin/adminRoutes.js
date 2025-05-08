@@ -1,17 +1,21 @@
 const express = require("express");
 const router = express.Router();
+const { getDashboard } = require("../../controllers/admin/adminController");
 const {
-  getDashboard,
   getCourses,
-  getMentors,
-  getStudents,
   postAddCourse,
   getIndividualCourse,
   postEditCourse,
   postDeleteCourse,
-  getIndividualStudent,
+} = require("../../controllers/admin/courseController");
+const {
+  getMentors,
   getIndividualMentor,
-} = require("../../controllers/admin/adminController");
+} = require("../../controllers/admin/mentorController");
+const {
+  getStudents,
+  getIndividualStudent,
+} = require("../../controllers/admin/studentController");
 const { verifyToken, checkRole } = require("../../middlewares/authMiddleware");
 
 router.get("/dashboard", verifyToken, checkRole(["admin"]), getDashboard);

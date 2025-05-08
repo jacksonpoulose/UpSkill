@@ -6,11 +6,15 @@ const {
   getCoursesList,
   getStudentsList,
   getIndividualCourse,
+<<<<<<< HEAD
   // getIndividualStudent,
   // postAddTask,
   // postEditTask,
   // postDeleteTask,
   // getIndividualTask,
+=======
+  getIndividualStudent,
+>>>>>>> main
 } = require("../../controllers/mentor/mentorController");
 
 router.get("/dashboard", verifyToken, checkRole(["mentor"]), getDashboard);
@@ -22,6 +26,7 @@ router.get(
 );
 router.get("/courses", verifyToken, checkRole(["mentor"]), getCoursesList);
 router.get("/students", verifyToken, checkRole(["mentor"]), getStudentsList);
+<<<<<<< HEAD
 // router.get(
 //   "/students/:_id",
 //   verifyToken,
@@ -52,5 +57,13 @@ router.get("/students", verifyToken, checkRole(["mentor"]), getStudentsList);
 //   checkRole(["mentor"]),
 //   getIndividualTask
 // );
+=======
+router.get(
+  "/students/:_id",
+  verifyToken,
+  checkRole(["mentor"]),
+  getIndividualStudent
+);
+>>>>>>> main
 
 module.exports = router;
