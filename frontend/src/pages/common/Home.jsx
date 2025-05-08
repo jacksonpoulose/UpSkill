@@ -148,7 +148,7 @@
 // export default Home;
 
 
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight, BookOpen, Users, Award, Menu, X } from 'lucide-react';
 import Button from '../../components/common/Button';
@@ -157,6 +157,9 @@ import Logo from '../../components/common/Logo';
 
 const HomePage = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  // New states for authentication
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState('');
 
   const categories = [
     {
@@ -201,13 +204,21 @@ const HomePage = () => {
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
-
+  useEffect(() => {
+    // You can customize this check based on your app logic (example using localStorage)
+    const user = JSON.parse(localStorage.getItem('user')); 
+    if (user && user.name) {
+      setIsLoggedIn(true);
+      setUsername(user.name);
+    }
+  }, []);
 
   return (
     <div className="bg-white">
       {/* Pre-header Banner */}
       <div className="bg-red-900 text-white text-center py-2 text-sm">
-        <p>🎉 New courses added weekly! Enroll now and get 20% off your first course.</p>
+        <p>Transform Your Career with Expert-Led Courses
+        </p>
       </div>
 
            {/* Main Header */}
@@ -218,28 +229,49 @@ const HomePage = () => {
               <Logo size="large" />
               <h1 className="text-2xl font-bold text-gray-900">Upskill.com</h1>
             </div>
-            
+
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-4">
               <p className="text-red-600 font-medium mr-6">
-                Transform Your Career with Expert-Led Courses
               </p>
-              <Button 
-                variant="text" 
-                size="md" 
-                className="text-gray-700 hover:text-red-600"
-                onClick={() => window.location.href = "/login"}
-              >
-                Login
-              </Button>
-              <Button 
-                variant="outline" 
-                size="md" 
-                className="text-red-600 border-red-600 hover:bg-red-50"
-                onClick={() => window.location.href = "/signup"}
-              >
-                Sign Up
-              </Button>
+
+              {isLoggedIn ? (
+                <div className="flex items-center space-x-4">
+                  <span className="text-gray-700 font-medium">Welcome, {username} 👋</span>
+                  <Button 
+                    variant="outline" 
+                    size="md" 
+                    className="text-red-600 border-red-600 hover:bg-red-50"
+                    onClick={() => {
+                      localStorage.removeItem('user'); // logout logic
+                      setIsLoggedIn(false);
+                      setUsername('');
+                    }}
+                  >
+                    Logout
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <Button 
+                    variant="text" 
+                    size="md" 
+                    className="text-gray-700 hover:text-red-600"
+                    onClick={() => window.location.href = "/login"}
+                  >
+                    Login
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="md" 
+                    className="text-red-600 border-red-600 hover:bg-red-50"
+                    onClick={() => window.location.href = "/signup"}
+                  >
+                    Sign Up
+                  </Button>
+                </>
+              )}
+              
               <Button 
                 variant="red" 
                 size="md" 
@@ -249,7 +281,7 @@ const HomePage = () => {
                 Become a Mentor
               </Button>
             </div>
-            
+
             {/* Mobile menu button */}
             <div className="md:hidden">
               <button 
@@ -257,34 +289,50 @@ const HomePage = () => {
                 className="text-gray-700 hover:text-red-600 focus:outline-none"
                 aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
               >
-                {mobileMenuOpen ? (
-                  <X className="h-6 w-6" />
-                ) : (
-                  <Menu className="h-6 w-6" />
-                )}
+                {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </button>
             </div>
           </div>
-          
+
           {/* Mobile Navigation */}
           {mobileMenuOpen && (
             <div className="md:hidden py-4 space-y-3 animate-fade-in-down">
-              <Button 
-                variant="text" 
-                size="md" 
-                className="w-full text-left text-gray-700 hover:text-red-600 py-2"
-                onClick={() => window.location.href = "/login"}
-              >
-                Login
-              </Button>
-              <Button 
-                variant="outline" 
-                size="md" 
-                className="w-full text-left text-red-600 border-red-600 hover:bg-red-50 py-2"
-                onClick={() => window.location.href = "/signup"}
-              >
-                Sign Up
-              </Button>
+              {isLoggedIn ? (
+                <div className="flex flex-col space-y-2">
+                  <span className="text-gray-700 font-medium">Welcome, {username} 👋</span>
+                  <Button 
+                    variant="outline" 
+                    size="md" 
+                    className="w-full text-red-600 border-red-600 hover:bg-red-50"
+                    onClick={() => {
+                      localStorage.removeItem('user');
+                      setIsLoggedIn(false);
+                      setUsername('');
+                    }}
+                  >
+                    Logout
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <Button 
+                    variant="text" 
+                    size="md" 
+                    className="w-full text-left text-gray-700 hover:text-red-600 py-2"
+                    onClick={() => window.location.href = "/login"}
+                  >
+                    Login
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="md" 
+                    className="w-full text-left text-red-600 border-red-600 hover:bg-red-50 py-2"
+                    onClick={() => window.location.href = "/signup"}
+                  >
+                    Sign Up
+                  </Button>
+                </>
+              )}
               <Button 
                 variant="red" 
                 size="md" 
