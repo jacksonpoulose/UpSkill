@@ -1,0 +1,33 @@
+[33mffc3507[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mHome[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{0}: merge main: Fast-forward
+[33md28770e[m HEAD@{1}: checkout: moving from main to Home
+[33mffc3507[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mHome[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{2}: pull: Fast-forward
+[33md28770e[m HEAD@{3}: checkout: moving from main to main
+[33md28770e[m HEAD@{4}: merge Home: Fast-forward
+[33m4ba1c0f[m HEAD@{5}: checkout: moving from Home to main
+[33md28770e[m HEAD@{6}: commit: seperate controllers
+[33m4ba1c0f[m HEAD@{7}: merge main: Fast-forward
+[33m1a4e63a[m[33m ([m[1;31morigin/Home[m[33m)[m HEAD@{8}: checkout: moving from main to Home
+[33m4ba1c0f[m HEAD@{9}: pull: Fast-forward
+[33m3107d75[m HEAD@{10}: checkout: moving from Home to main
+[33m1a4e63a[m[33m ([m[1;31morigin/Home[m[33m)[m HEAD@{11}: checkout: moving from main to Home
+[33m3107d75[m HEAD@{12}: checkout: moving from Home to main
+[33m1a4e63a[m[33m ([m[1;31morigin/Home[m[33m)[m HEAD@{13}: commit: mentor student main pages
+[33m883c6cb[m HEAD@{14}: checkout: moving from main to Home
+[33m3107d75[m HEAD@{15}: reset: moving to HEAD
+[33m3107d75[m HEAD@{16}: checkout: moving from Home to main
+[33m883c6cb[m HEAD@{17}: checkout: moving from main to Home
+[33m3107d75[m HEAD@{18}: reset: moving to HEAD
+[33m3107d75[m HEAD@{19}: pull: Fast-forward
+[33m81fbf12[m HEAD@{20}: reset: moving to HEAD
+[33m81fbf12[m HEAD@{21}: checkout: moving from Home to main
+[33m883c6cb[m HEAD@{22}: checkout: moving from main to Home
+[33m81fbf12[m HEAD@{23}: checkout: moving from Home to main
+[33m883c6cb[m HEAD@{24}: commit (merge): test commit
+[33me624ef8[m HEAD@{25}: checkout: moving from main to Home
+[33m81fbf12[m HEAD@{26}: pull: Fast-forward
+[33m542d9ab[m HEAD@{27}: checkout: moving from Home to main
+[33me624ef8[m HEAD@{28}: commit: routing and jwt verification
+[33m52588dc[m HEAD@{29}: checkout: moving from main to Home
+[33m542d9ab[m HEAD@{30}: commit: remove unwanted files
+[33mf610076[m HEAD@{31}: commit: remove unwanted files
+[33m2330d6a[m HEAD@{32}: clone: from https://github.com/jacksonpoulose/UpSkill.git
