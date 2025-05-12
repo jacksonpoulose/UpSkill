@@ -6,15 +6,15 @@ const {
   getCoursesList,
   getStudentsList,
   getIndividualCourse,
-<<<<<<< HEAD
+
   // getIndividualStudent,
   // postAddTask,
   // postEditTask,
   // postDeleteTask,
   // getIndividualTask,
-=======
-  getIndividualStudent,
->>>>>>> main
+
+  // getIndividualStudent,
+
 } = require("../../controllers/mentor/mentorController");
 
 router.get("/dashboard", verifyToken, checkRole(["mentor"]), getDashboard);
@@ -26,13 +26,12 @@ router.get(
 );
 router.get("/courses", verifyToken, checkRole(["mentor"]), getCoursesList);
 router.get("/students", verifyToken, checkRole(["mentor"]), getStudentsList);
-<<<<<<< HEAD
-// router.get(
-//   "/students/:_id",
-//   verifyToken,
-//   checkRole(["mentor"]),
-//   getIndividualStudent
-// );
+router.get(
+  "/students/:_id",
+  verifyToken,
+  checkRole(["mentor"]),
+  // getIndividualStudent
+);
 // router.post(
 //   "/students/:_id/addTask",
 //   verifyToken,
@@ -57,13 +56,13 @@ router.get("/students", verifyToken, checkRole(["mentor"]), getStudentsList);
 //   checkRole(["mentor"]),
 //   getIndividualTask
 // );
-=======
-router.get(
-  "/students/:_id",
-  verifyToken,
-  checkRole(["mentor"]),
-  getIndividualStudent
-);
->>>>>>> main
+
+// router.get(
+//   "/students/:_id",
+//   verifyToken,
+//   checkRole(["mentor"]),
+//   getIndividualStudent
+// );
+
 
 module.exports = router;
