@@ -35,4 +35,5 @@ const getIndividualCourse = (req, res) => {
   }
 };
 
-module.exports = {getDashboard,getCoursesList,getStudentsList,getIndividualCourse,getIndividualStudent,postAddTask,postEditTask,postDeleteTask,getIndividualTask}
+module.exports = {getDashboard,getCoursesList,getStudentsList,getIndividualCourse,
+  }
