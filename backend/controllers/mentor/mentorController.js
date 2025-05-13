@@ -12,10 +12,8 @@ const getDashboard = (req, res) => {
 const getCoursesList = async (req, res) => {
   try {
     const course = await Course.find({});
-    res
-      .status(200)
-      .json({ message: "welcome to courses list", courses: course });
-  } catch (error) {
+    res.status(200).json({ message: "welcome to courses list", courses: course });
+} catch (error) {
     console.log(error);
     res.status(404).json({ message: "page not found" });
   }
@@ -37,14 +35,5 @@ const getIndividualCourse = (req, res) => {
   }
 };
 
-module.exports = {
-  getDashboard,
-  getCoursesList,
-  getStudentsList,
-  getIndividualCourse,
-  // getIndividualStudent,
-  // postAddTask,
-  // postEditTask,
-  // postDeleteTask,
-  // getIndividualTask,
-};
+module.exports = {getDashboard,getCoursesList,getStudentsList,getIndividualCourse,
+  }

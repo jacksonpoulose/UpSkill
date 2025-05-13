@@ -5,6 +5,7 @@ const {getDashboard,
 } = require("../../controllers/student/studentController");
 const { verifyToken, checkRole } = require("../../middlewares/authMiddleware");
 
+//routes for student
 router.get("/dashboard", verifyToken, checkRole(["student"]),getDashboard);
 router.get("/tasksheet", verifyToken, checkRole(["student"]),getTasksheet); 
 
