@@ -4,7 +4,7 @@ const Courses = require("../../models/courseModel");
 const getCourses = async (req, res) => {
   try {
     const courses = await Courses.find();
-    res.status(200).json({ message: "welcome to Courses" });
+    res.status(200).json({ message: "welcome to Courses" ,courses});
   } catch (error) {
     console.log(error);
     res.status(404).json({ message: "page not found" });

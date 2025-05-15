@@ -1,9 +1,12 @@
 const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/db.js");
+const session = require("./config/session");
+const passport = require("passport");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
 const routes = require("./routes");
+const sessionMiddleware = require("./config/session");
 
 const app = express();
 
@@ -16,13 +19,13 @@ app.use(morgan("dev"));
 
 app.use("/api/v1", routes);
 
-// app.get("/api/test", (req, res) => {
-//   res.json({ message: "backend is working!" });
-// });
+app.use(sessionMiddleware);
+app.use(passport.initialize());
+app.use(passport.session());
 
-app.use((err,req,res,next)=>{
-  console.log(err)
-  res.status(500).json({message:err.message})
-})
+app.use((err, req, res, next) => {
+  console.log(err);
+  res.status(500).json({ message: err.message });
+});
 
 app.listen(3000, () => console.log("Server running on port 3000"));
