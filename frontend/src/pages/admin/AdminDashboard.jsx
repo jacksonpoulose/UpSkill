@@ -108,7 +108,7 @@ const AdminDashboard = () => {
     item.id === 'courses' ? (
       <Link
         key={item.id}
-        to="/admin-dashboard/courses"
+        to="/admin/courses"
         className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg mb-2 ${
           currentSection === item.id
             ? 'bg-blue-50 text-blue-600'

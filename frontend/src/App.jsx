@@ -6,8 +6,8 @@ import SignUp from "./pages/common/SignUp";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import Courses from "./pages/admin/Courses"
 import AddCourse from "./pages/admin/AddCourse"; // Import
-
-
+import EditCourse from "./pages/admin/EditCourse"
+import Students from "./pages/admin/Students";
 const App = () => {
   return (
     <Routes>
@@ -15,10 +15,11 @@ const App = () => {
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
-      <Route path="/admin-dashboard" element={<AdminDashboard />} />
-      <Route path="/admin-dashboard/courses" element={<Courses />} />
-      <Route path="/admin-dashboard/courses/add" element={<AddCourse />} />
-
+      <Route path="/admin" element={<AdminDashboard />} />
+      <Route path="/admin/courses" element={<Courses />} />
+      <Route path="/admin/courses/add" element={<AddCourse />} />
+      <Route path="/admin/courses/edit/:id" element={<EditCourse />} />
+      <Route path="/admin/students" element={<Students/>}/>
     </Routes>
   );
 };
