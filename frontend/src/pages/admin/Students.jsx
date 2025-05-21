@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Sidebar from "../../components/admin/Sidebar";
 import Button from "../../components/common/Button";
+import StudentStatusBadge from "../../components/admin/StudentStatusBadge";
 import {
   Plus,
   Search,
@@ -11,7 +12,7 @@ import {
   Mail,
   BookOpen,
 } from "lucide-react";
-// import ProgressBar from "../../components/common/ProgressBar";
+import ProgressBar from "../../components/common/ProgressBar";
 
 const Students = () => {
   const [students, setStudents] = useState([]);
@@ -40,9 +41,7 @@ const Students = () => {
     fetchStudents();
   }, []);
 
-  const handleAddStudent = () => {
-    navigate("/admin/students/add");
-  };
+
 
   const getProgressColor = (progress) => {
     if (progress >= 80) return "green";
@@ -64,14 +63,7 @@ const Students = () => {
             <h1 className="text-2xl font-bold text-gray-900">Students</h1>
             <p className="text-gray-600">Manage your student enrollments</p>
           </div>
-          <Button
-            variant="blue"
-            className="flex items-center space-x-2 bg-blue-500"
-            onClick={handleAddStudent}
-          >
-            <Plus size={20} />
-            <span>Add Student</span>
-          </Button>
+        
         </div>
 
         <div className="bg-white rounded-lg shadow-sm">

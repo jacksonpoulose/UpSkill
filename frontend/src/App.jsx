@@ -8,6 +8,7 @@ import Courses from "./pages/admin/Courses"
 import AddCourse from "./pages/admin/AddCourse"; // Import
 import EditCourse from "./pages/admin/EditCourse"
 import Students from "./pages/admin/Students";
+import CourseCategory from "./pages/admin/CourseCategory";
 const App = () => {
   return (
     <Routes>
@@ -20,6 +21,8 @@ const App = () => {
       <Route path="/admin/courses/add" element={<AddCourse />} />
       <Route path="/admin/courses/edit/:id" element={<EditCourse />} />
       <Route path="/admin/students" element={<Students/>}/>
+      <Route path="/admin/coursecategory" element={<CourseCategory/>}/>
+
     </Routes>
   );
 };
