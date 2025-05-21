@@ -4,14 +4,22 @@ const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    password: { type: String, required: true }, // Hashed
     role: {
       type: String,
-      enum: ["admin", "student", "mentor"],
-      default: "student",
+      enum: ["guest","admin", "student", "mentor"],
+      default: "guest",
+      required: true,
     },
+    profilePicture: { type: String },
+    phone: { type: String },
+    gender: { type: String },
+    dateOfBirth: { type: Date },
+    isActive: { type: Boolean, default: true },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
-module.exports = mongoose.model("users", userSchema);
+module.exports = mongoose.model("User", userSchema);
