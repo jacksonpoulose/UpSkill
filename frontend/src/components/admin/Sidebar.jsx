@@ -16,7 +16,7 @@ const Sidebar = () => {
     { label: 'Dashboard', path: '/admin', icon: <LayoutDashboard /> },
     { label: 'Course Categories', path: '/admin/categories', icon: <Folder /> },
     { label: 'Course Tracks', path: '/admin/tracks', icon: <Layers /> },
-    { label: 'Courses', path: '/admin/coursescategory', icon: <BookOpen /> },
+    { label: 'Courses', path: '/admin/courses', icon: <BookOpen /> },
     { label: 'Students', path: '/admin/students', icon: <Users /> },
     { label: 'Mentors', path: '/admin/mentors', icon: <UserCog /> },
     { label: 'Settings', path: '/admin/settings', icon: <Settings /> },
