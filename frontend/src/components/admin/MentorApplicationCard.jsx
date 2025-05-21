@@ -1,22 +1,10 @@
 import React from 'react';
-import { Mentor } from '../../types';
+import PropTypes from 'prop-types';
 import Card, { CardHeader, CardBody, CardFooter } from '../common/Card';
 import Button from '../common/Button';
 import { User, Clock, CheckCircle, XCircle } from 'lucide-react';
 
-interface MentorApplicationCardProps {
-  mentor: Mentor;
-  onApprove: (id: string) => void;
-  onReject: (id: string) => void;
-  isProcessing: boolean;
-}
-
-const MentorApplicationCard: React.FC<MentorApplicationCardProps> = ({
-  mentor,
-  onApprove,
-  onReject,
-  isProcessing,
-}) => {
+const MentorApplicationCard = ({ mentor, onApprove, onReject, isProcessing }) => {
   return (
     <Card variant="admin" className="h-full">
       <CardHeader variant="admin">
@@ -27,7 +15,7 @@ const MentorApplicationCard: React.FC<MentorApplicationCardProps> = ({
           </span>
         </div>
       </CardHeader>
-      
+
       <CardBody>
         <div className="flex items-start mb-4">
           <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden mr-4">
@@ -41,7 +29,7 @@ const MentorApplicationCard: React.FC<MentorApplicationCardProps> = ({
               <User size={24} className="text-gray-500" />
             )}
           </div>
-          
+
           <div>
             <p className="text-gray-500 text-sm">{mentor.email}</p>
             <div className="flex items-center mt-1 text-sm text-gray-500">
@@ -50,7 +38,7 @@ const MentorApplicationCard: React.FC<MentorApplicationCardProps> = ({
             </div>
           </div>
         </div>
-        
+
         <div className="mb-4">
           <h4 className="font-medium text-sm text-gray-700 mb-1">Specializations:</h4>
           <div className="flex flex-wrap gap-2">
@@ -64,14 +52,14 @@ const MentorApplicationCard: React.FC<MentorApplicationCardProps> = ({
             ))}
           </div>
         </div>
-        
+
         {mentor.experience && (
           <div className="mb-4">
             <h4 className="font-medium text-sm text-gray-700 mb-1">Experience:</h4>
             <p className="text-sm text-gray-600">{mentor.experience}</p>
           </div>
         )}
-        
+
         {mentor.bio && (
           <div>
             <h4 className="font-medium text-sm text-gray-700 mb-1">Bio:</h4>
@@ -79,7 +67,7 @@ const MentorApplicationCard: React.FC<MentorApplicationCardProps> = ({
           </div>
         )}
       </CardBody>
-      
+
       <CardFooter className="flex justify-between">
         <Button
           variant="outline"
@@ -90,7 +78,7 @@ const MentorApplicationCard: React.FC<MentorApplicationCardProps> = ({
         >
           Reject
         </Button>
-        
+
         <Button
           variant="admin"
           size="sm"
@@ -103,6 +91,22 @@ const MentorApplicationCard: React.FC<MentorApplicationCardProps> = ({
       </CardFooter>
     </Card>
   );
+};
+
+MentorApplicationCard.propTypes = {
+  mentor: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    profilePicture: PropTypes.string,
+    specialization: PropTypes.arrayOf(PropTypes.string).isRequired,
+    experience: PropTypes.string,
+    bio: PropTypes.string,
+    createdAt: PropTypes.string.isRequired,
+  }).isRequired,
+  onApprove: PropTypes.func.isRequired,
+  onReject: PropTypes.func.isRequired,
+  isProcessing: PropTypes.bool.isRequired,
 };
 
 export default MentorApplicationCard;

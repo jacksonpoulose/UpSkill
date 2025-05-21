@@ -24,7 +24,7 @@ const Login = () => {
     if (result.meta.requestStatus === 'fulfilled') {
       const loggedInUser = result.payload.user; // safely access user
       if (loggedInUser.role === 'admin') {
-        navigate('/admin-dashboard');
+        navigate('/admin');
       } else {
         navigate('/');
       }
