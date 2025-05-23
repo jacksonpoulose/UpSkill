@@ -6,7 +6,7 @@ const getStudents = async (req, res) => {
     const students = await Users.find({ role: "student" });
     res
       .status(200)
-      .json({ message: "welcome to Students page", users: students });
+      .json({ message: "welcome to Students page", students });
   } catch (error) {
     console.log(error);
     res.status(404).json({ message: "page not found" });
