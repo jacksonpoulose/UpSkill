@@ -8,22 +8,33 @@ const {
   postEditCourse,
   postDeleteCourse,
 } = require("../../controllers/admin/courseController");
+const {
+  postAddCategory,
+  postEditCategory,
+  postDeleteCategory,
+} = require("../../controllers/admin/categoryController");
 const { getMentors, getIndividualMentor } = require("../../controllers/admin/mentorController");
 const { getStudents, getIndividualStudent } = require("../../controllers/admin/studentController");
 const { verifyToken, checkRole } = require("../../middlewares/authMiddleware");
 
-router.get("/dashboard", verifyToken, checkRole(["admin"]), getDashboard);
-router.get("/courses", verifyToken, checkRole(["admin"]), getCourses);
-router.get("/students", verifyToken, checkRole(["admin"]), getStudents);
-router.get("/mentors", verifyToken, checkRole(["admin"]), getMentors);
+router.use(verifyToken, checkRole(["admin"]));
 
-router.post("/courses/add", verifyToken, checkRole(["admin"]), postAddCourse);
-router.put("/courses/:id/edit", verifyToken, checkRole(["admin"]), postEditCourse);
-router.delete("/courses/:id", verifyToken, checkRole(["admin"]), postDeleteCourse);
+router.get("/dashboard", getDashboard);
+router.get("/courses", getCourses);
+router.get("/students", getStudents);
+router.get("/mentors", getMentors);
 
-router.get("/courses/:id", verifyToken, checkRole(["admin"]), getIndividualCourse);
+router.post("/category/add", postAddCategory);
+router.put("/category/:id/edit", postEditCategory);
+router.delete("/category/:id", postDeleteCategory);
 
-router.post("/students/:id", verifyToken, checkRole(["admin"]), getIndividualStudent);
-router.post("/mentors/:id", verifyToken, checkRole(["admin"]), getIndividualMentor);
+router.post("/courses/add", postAddCourse);
+router.put("/courses/:id/edit", postEditCourse);
+router.delete("/courses/:id", postDeleteCourse);
+
+router.get("/courses/:id", getIndividualCourse);
+
+router.post("/students/:id", getIndividualStudent);
+router.post("/mentors/:id", getIndividualMentor);
 
 module.exports = router;

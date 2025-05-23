@@ -9,7 +9,9 @@ const getStudents = async (req, res) => {
     console.log('Students',students)
     res
       .status(200)
+
       .json({ message: "welcome to Students page",students });
+
   } catch (error) {
     console.log(error);
     res.status(404).json({ message: "page not found" });
