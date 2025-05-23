@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import Sidebar from '../../components/admin/Sidebar'; // Adjust path if needed
 
 import {
   LayoutDashboard,
@@ -95,50 +96,11 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
-      <div className="w-64 bg-white shadow-lg">
-        <div className="p-4 border-b">
-          <div className="flex items-center space-x-2">
-            <GraduationCap className="h-8 w-8 text-blue-600" />
-            <span className="text-xl font-bold text-gray-800">Upskill Admin</span>
-          </div>
-        </div>
-        <nav className="p-4">
-  {sidebarItems.map((item) => (
-    item.id === 'courses' ? (
-      <Link
-        key={item.id}
-        to="/admin-dashboard/courses"
-        className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg mb-2 ${
-          currentSection === item.id
-            ? 'bg-blue-50 text-blue-600'
-            : 'text-gray-600 hover:bg-gray-50'
-        }`}
-      >
-        {item.icon}
-        <span>{item.label}</span>
-      </Link>
-    ) : (
-      <button
-        key={item.id}
-        onClick={() => setCurrentSection(item.id)}
-        className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg mb-2 ${
-          currentSection === item.id
-            ? 'bg-blue-50 text-blue-600'
-            : 'text-gray-600 hover:bg-gray-50'
-        }`}
-      >
-        {item.icon}
-        <span>{item.label}</span>
-      </button>
-    )
-  ))}
-</nav>
-      </div>
+<Sidebar />
 
       {/* Main Content */}
-      <div className="flex-1 overflow-hidden">
-        {/* Header */}
+      <div className="ml-64 flex-1 overflow-hidden">
+      {/* Header */}
         <header className="bg-white shadow-sm">
           <div className="flex items-center justify-between px-8 py-4">
             <div className="flex items-center bg-gray-100 rounded-lg px-4 py-2 w-96">
