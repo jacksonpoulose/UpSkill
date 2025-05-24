@@ -14,12 +14,12 @@ const postAddCategory = async (req, res) => {
   try {
     const { name, description } = req.body;
     const category = await Category.create({ name, description });
-    res.status(201).json(category);
+    res.status(201).json({ category }); // ✅ wrap it in { category }
   } catch (err) {
-    res.status(500).json({ message: "Error creating category" });
+    console.error("Error creating category:", err); // ✅ log full error
+    res.status(500).json({ message: "Error creating category", error: err.message });
   }
 };
-
 const postEditCategory = async (req, res) => {
   try {
     const categoryId = req.params.id;

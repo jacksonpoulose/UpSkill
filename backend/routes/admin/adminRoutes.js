@@ -12,6 +12,7 @@ const {
   postAddCategory,
   postEditCategory,
   postDeleteCategory,
+  getCategories,
 } = require("../../controllers/admin/categoryController");
 const { getMentors, getIndividualMentor } = require("../../controllers/admin/mentorController");
 const { getStudents, getIndividualStudent } = require("../../controllers/admin/studentController");
@@ -24,6 +25,7 @@ router.get("/courses", getCourses);
 router.get("/students", getStudents);
 router.get("/mentors", getMentors);
 
+router.get("/category", getCategories);
 router.post("/category/add", postAddCategory);
 router.put("/category/:id/edit", postEditCategory);
 router.delete("/category/:id", postDeleteCategory);
