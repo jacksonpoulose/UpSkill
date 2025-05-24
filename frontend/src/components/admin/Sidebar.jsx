@@ -14,7 +14,7 @@ import {
 const Sidebar = () => {
   const navItems = [
     { label: 'Dashboard', path: '/admin', icon: <LayoutDashboard /> },
-    { label: 'Course Categories', path: '/admin/categories', icon: <Folder /> },
+    { label: 'Course Categories', path: '/admin/coursecategory', icon: <Folder /> },
     { label: 'Course Tracks', path: '/admin/tracks', icon: <Layers /> },
     { label: 'Courses', path: '/admin/courses', icon: <BookOpen /> },
     { label: 'Students', path: '/admin/students', icon: <Users /> },
