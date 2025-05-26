@@ -15,10 +15,15 @@ const Navbar: React.FC = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
+  // const handleLogout = () => {
+  //   logout();
+  //   navigate('/login');
+  // };
+
+const handleLogout = () => {
+  localStorage.removeItem("token"); // if stored in localStorage
+  navigate("/login"); // or window.location.href = "/login"
+};
 
   return (
     <header 

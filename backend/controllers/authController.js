@@ -1,5 +1,5 @@
 const User = require("../models/userModel.js");
-const JWT = require("jsonwebtoken")
+const JWT = require("jsonwebtoken");
 const { hashPassword, comparePassword } = require("../utils/authUtil");
 const loginValidation = require("../validations/loginValidation.js");
 const registerValidation = require("../validations/registerValidation");
@@ -10,8 +10,7 @@ const registerController = async (req, res) => {
     const { name, email, password, confirmPassword } = req.body;
     console.log(req.body);
     const { error } = registerValidation(req.body);
-    if (error)
-      return res.status(400).json({ message: error.details[0].message });
+    if (error) return res.status(400).json({ message: error.details[0].message });
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
@@ -81,7 +80,6 @@ const registerController = async (req, res) => {
 const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(req.body);
 
     const { error } = loginValidation(req.body);
     if (error) {
@@ -92,24 +90,21 @@ const loginController = async (req, res) => {
     if (!user) return res.status(400).json({ message: "invalid credentials" });
 
     const isMatch = await comparePassword(password, user.password);
-    if (!isMatch)
-      return res.status(400).json({ message: "invalid credentials" });
+    if (!isMatch) return res.status(400).json({ message: "invalid credentials" });
 
-    const token = JWT.sign(
-      { id: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" }
-    );
+    const token = JWT.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
 
-    // ✅ Send back token + user details (without password)
-    res.json({ 
-      token, 
+    // Send the token and user details in the response
+    res.json({
+      token,
       user: {
         _id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
-      }
+      },
     });
   } catch (error) {
     console.error(error);
@@ -121,8 +116,22 @@ const loginController = async (req, res) => {
   }
 };
 
+const logoutController = async (req, res) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+    res.status(200).json({ success: true, message: "Logged out successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Logout failed", error });
+  }
+};
 
 module.exports = {
   registerController,
   loginController,
+  logoutController,
 };

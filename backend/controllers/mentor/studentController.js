@@ -1,9 +1,12 @@
 const User = require("../../models/userModel");
 const StudentProfile = require("../../models/studentProfile");
 
-const getStudentsList = (req, res) => {
+const getStudentsList = async (req, res) => {
   try {
-    res.status(200).json({ message: "welcome to students list" });
+    const mentorId = req.user.id;
+    console.log(req.user);
+    const students = await StudentProfile.find({ mentorId }).populate("userId");
+    res.status(200).json({ message: "welcome to students list", students });
   } catch (error) {
     console.log(error);
     res.status(404).json({ message: "page not found" });

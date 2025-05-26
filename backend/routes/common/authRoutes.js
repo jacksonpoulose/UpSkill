@@ -1,12 +1,13 @@
 const express = require("express");
 const passport = require("passport");
 
-const {registerController,loginController} = require("../../controllers/authController")
+const {registerController,loginController, logoutController} = require("../../controllers/authController")
 
 const router = express.Router();
 
 router.post("/register", registerController);
 router.post("/login", loginController);
+router.post("/logout", logoutController);
 
 
 // Step 1: Redirect user to Google login

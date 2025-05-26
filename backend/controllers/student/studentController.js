@@ -11,6 +11,32 @@ const getDashboard = (req, res) => {
   }
 };
 
+const getMentorDetails = async (req, res) => {
+  try {
+    const studentUserId = req.user._id;
+
+    const studentProfile = await StudentProfile.findOne({ userId: studentUserId }).populate({
+      path: "mentorId",
+      select: "name email role",
+      populate: {
+        path: "mentorProfile",
+        model: "MentorProfile",
+      },
+    });
+
+    if (!studentProfile || !studentProfile.mentorId) {
+      return res.status(404).json({ message: "Assigned mentor not found" });
+    }
+
+    res.status(200).json({
+      mentor: studentProfile.mentorId,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 const getTasksheet = async (req, res) => {
   try {
     const course = await course.findOne({});
@@ -41,11 +67,7 @@ const updateProfile = async (req, res) => {
     const { name, email, phone, learningGoals, skillLevel, githubLink, portfolioLink } = req.body;
 
     // Update the User document
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { name, email, phone },
-      { new: true }
-    );
+    const updatedUser = await User.findByIdAndUpdate(userId, { name, email, phone }, { new: true });
 
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
@@ -59,8 +81,8 @@ const updateProfile = async (req, res) => {
           learningGoals,
           skillLevel,
           githubLink,
-          portfolioLink
-        }
+          portfolioLink,
+        },
       },
       { new: true }
     );
@@ -72,7 +94,7 @@ const updateProfile = async (req, res) => {
     res.status(200).json({
       message: "Profile updated successfully",
       user: updatedUser,
-      studentProfile: updatedStudentProfile
+      studentProfile: updatedStudentProfile,
     });
   } catch (error) {
     console.error(error);
@@ -80,5 +102,4 @@ const updateProfile = async (req, res) => {
   }
 };
 
-
-module.exports = { getDashboard, getTasksheet, getProfilePage, updateProfile };
+module.exports = { getDashboard, getTasksheet, getProfilePage, updateProfile, getMentorDetails };
