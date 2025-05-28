@@ -9,6 +9,11 @@ import AddCourse from "./pages/admin/AddCourse"; // Import
 import EditCourse from "./pages/admin/EditCourse"
 import Students from "./pages/admin/Students";
 import CourseCategory from "./pages/admin/CourseCategory";
+import CoursesPage from "./pages/common/CoursePage";
+import MentorRegister from "./pages/mentor/MentorRegistrationPage";
+import ForgotPassword from "./pages/common/ForgotPassword";
+import StudentDashboard from "./pages/student/StudentDashboard";
+import StudentProfile from "./pages/student/StudentProfile";
 const App = () => {
   return (
     <Routes>
@@ -22,6 +27,12 @@ const App = () => {
       <Route path="/admin/courses/edit/:id" element={<EditCourse />} />
       <Route path="/admin/students" element={<Students/>}/>
       <Route path="/admin/coursecategory" element={<CourseCategory/>}/>
+
+      <Route path="/courses" element={<CoursesPage />} />
+      <Route path="/mentor/register" element={<MentorRegister/>}/>
+      <Route path="/forgot-password" element={<ForgotPassword/>}/>
+      <Route path="/studentdashboard" element={<StudentDashboard/>}/>
+      <Route path="/studentdashboard/studentprofile" element={<StudentProfile/>}/>
 
     </Routes>
   );
