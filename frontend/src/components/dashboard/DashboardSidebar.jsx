@@ -36,14 +36,14 @@ const SidebarLink = ({ to, icon, label }) => (
 
 const DashboardSidebar= () => {
   const navigationLinks = [
-    { to: '/dashboard', icon: <LayoutDashboard size={20} />, label: 'Overview' },
-    { to: '/dashboard/courses', icon: <GraduationCap size={20} />, label: 'My Courses' },
-    { to: '/dashboard/schedule', icon: <Calendar size={20} />, label: 'Schedule' },
-    { to: '/dashboard/mentor', icon: <MessageSquare size={20} />, label: 'My Mentor' },
-    { to: '/dashboard/assignments', icon: <FileText size={20} />, label: 'Assignments' },
-    { to: '/dashboard/resources', icon: <BookOpen size={20} />, label: 'Resources' },
-    { to: '/dashboard/profile', icon: <User size={20} />, label: 'Profile' },
-    { to: '/dashboard/settings', icon: <Settings size={20} />, label: 'Settings' },
+    { to: '/studentdashboard', icon: <LayoutDashboard size={20} />, label: 'Overview' },
+    { to: '/studentdashboard/courses', icon: <GraduationCap size={20} />, label: 'My Courses' },
+    { to: '/studentdashboard/schedule', icon: <Calendar size={20} />, label: 'Schedule' },
+    { to: '/studentdashboard/mentor', icon: <MessageSquare size={20} />, label: 'My Mentor' },
+    { to: '/studentdashboard/assignments', icon: <FileText size={20} />, label: 'Assignments' },
+    { to: '/studentdashboard/resources', icon: <BookOpen size={20} />, label: 'Resources' },
+    { to: '/studentdashboard/profile', icon: <User size={20} />, label: 'Profile' },
+    { to: '/studentdashboard/settings', icon: <Settings size={20} />, label: 'Settings' },
   ];
 
   return (
