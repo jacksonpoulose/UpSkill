@@ -1,25 +1,20 @@
 const Users = require("../../models/userModel");
 const Courses = require("../../models/courseModel");
-
-
+const StudentProfile = require("../../models/studentProfileModel");
 
 const getStudents = async (req, res) => {
   try {
     const students = await Users.find({ role: "student" });
-    console.log('Students',students)
+    console.log("Students", students);
     res
       .status(200)
 
-      .json({ message: "welcome to Students page",students });
-
+      .json({ message: "welcome to Students page", students });
   } catch (error) {
     console.log(error);
     res.status(404).json({ message: "page not found" });
   }
 };
-
-
-
 
 const getIndividualStudent = async (req, res) => {
   try {

@@ -1,7 +1,11 @@
+const Course = require('../../models/Course');
 
 
 const postAddTask = (req,res)=>{
     try{
+        const { title, description, courseId } = req.body;
+        const newTask = new Task({ title, description, courseId });
+        newTask.save();
         res.status(200).json({message:"welcome to add task"})
     }catch(error){
         console.log(error);
