@@ -3,6 +3,7 @@ import { Loader2 } from 'lucide-react';
 
 const Button = ({
   children,
+  as: Component = 'button',  // 👈 default to 'button' if no 'as' is passed
   variant = 'primary',
   size = 'md',
   isLoading = false,
@@ -28,12 +29,13 @@ const Button = ({
     ghost: 'bg-transparent text-gray-700 hover:bg-gray-100 focus:ring-gray-500 disabled:text-gray-300',
     danger: 'bg-error-600 text-white hover:bg-error-700 focus:ring-error-500 disabled:bg-error-300',
     admin: 'bg-admin-600 text-white hover:bg-admin-700 focus:ring-admin-500 disabled:bg-admin-300',
+    red: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 disabled:bg-red-300', // ✅ add this if you're using variant="red"
   };
   
   const widthClass = fullWidth ? 'w-full' : '';
 
   return (
-    <button
+    <Component
       className={`
         ${baseClasses}
         ${sizeClasses[size]}
@@ -42,20 +44,14 @@ const Button = ({
         ${(isLoading || disabled) ? 'cursor-not-allowed' : ''}
         ${className}
       `}
-      disabled={isLoading || disabled}
+      disabled={Component === 'button' && (isLoading || disabled)}
       {...props}
     >
-      {isLoading && (
-        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-      )}
-      {!isLoading && leftIcon && (
-        <span className="mr-2">{leftIcon}</span>
-      )}
+      {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+      {!isLoading && leftIcon && <span className="mr-2">{leftIcon}</span>}
       {children}
-      {!isLoading && rightIcon && (
-        <span className="ml-2">{rightIcon}</span>
-      )}
-    </button>
+      {!isLoading && rightIcon && <span className="ml-2">{rightIcon}</span>}
+    </Component>
   );
 };
 
