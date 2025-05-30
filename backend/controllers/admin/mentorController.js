@@ -1,5 +1,5 @@
 const Users = require("../../models/userModel");
-const Courses = require("../../models/courseModel");
+const Courses = require("../../models/course/course");
 
 const getMentors = (req, res) => {
   try {
