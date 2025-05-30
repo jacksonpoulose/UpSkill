@@ -3,7 +3,7 @@ const JWT = require("jsonwebtoken");
 const { hashPassword, comparePassword } = require("../utils/authUtil");
 const loginValidation = require("../validations/loginValidation.js");
 const registerValidation = require("../validations/registerValidation");
-const { verifyToken, checkRole } = require("../middlewares/authMiddleware.js");
+const sendEmail = require("../utils/sendEmail.js");
 
 const registerController = async (req, res) => {
   try {
@@ -43,40 +43,6 @@ const registerController = async (req, res) => {
   }
 };
 
-// const loginController = async (req, res) => {
-//   try {
-//     const { email, password } = req.body;
-//     console.log(req.body);
-
-//     const { error } = loginValidation(req.body);
-//     if (error) {
-//       return res.status(400).json({ message: error.details[0].message });
-//     }
-
-//     const user = await User.findOne({ email });
-//     if (!user) return res.status(400).json({ message: "invalid credentials" });
-
-//     const isMatch = await comparePassword(password, user.password);
-//     if (!isMatch)
-//       return res.status(400).json({ message: "invalid credentials" });
-
-//     const token = JWT.sign(
-//       { id: user._id, role: user.role },
-//       process.env.JWT_SECRET,
-//       { expiresIn: "1d" }
-//     );
-
-//     res.json({ token });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send({
-//       success: false,
-//       message: "error in login",
-//       error,
-//     });
-//   }
-// };
-
 const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -96,7 +62,6 @@ const loginController = async (req, res) => {
       expiresIn: "1d",
     });
 
-    // Send the token and user details in the response
     res.json({
       token,
       user: {
@@ -130,8 +95,74 @@ const logoutController = async (req, res) => {
   }
 };
 
+const forgotPasswordController = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ message: "Email is required" });
+
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const token = JWT.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${token}`;
+
+    const htmlContent = `
+      <h1>Password Reset</h1>
+      <p>You requested to reset your password.</p>
+      <a href="${resetUrl}">Click here to reset your password</a>
+      <p>This link will expire in 1 hour.</p>
+    `;
+
+    await sendEmail({
+      to: user.email,
+      subject: "Reset Your Password",
+      html: htmlContent,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Password reset link sent to email",
+    });
+  } catch (error) {
+    console.error("Forgot Password Error:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+const resetPasswordController = async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+    if (!token || !newPassword) {
+      return res.status(400).json({ message: "Token and new password are required" });
+    }
+
+    let decoded;
+    try {
+      decoded = JWT.verify(token, process.env.JWT_SECRET);
+    } catch (error) {
+      return res.status(400).json({ message: "Invalid or expired token" });
+    }
+
+    const user = await User.findById(decoded.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.password = await hashPassword(newPassword);
+    await user.save();
+
+    res.status(200).json({ success: true, message: "Password reset successfully" });
+  } catch (error) {
+    console.error("Reset Password Error:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
 module.exports = {
   registerController,
   loginController,
   logoutController,
+  forgotPasswordController,
+  resetPasswordController,
 };

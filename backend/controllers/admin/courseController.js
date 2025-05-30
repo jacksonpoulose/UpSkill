@@ -36,6 +36,8 @@ const postAddCourse = async (req, res) => {
       studentsEnrolled: [], // initialize as empty array
     });
 
+    
+
     res.status(201).json(course);
   } catch (err) {
     console.error("Error creating course:", err);
