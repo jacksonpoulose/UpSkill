@@ -11,10 +11,13 @@ const {
   getIndividualStudent,
 } = require("../../controllers/mentor/studentController");
 
-router.get("/dashboard", verifyToken, checkRole(["mentor"]), getDashboard);
-router.get("/courses/:_id", verifyToken, checkRole(["mentor"]), getIndividualCourse);
-router.get("/courses", verifyToken, checkRole(["mentor"]), getCoursesList);
-router.get("/students", verifyToken, checkRole(["mentor"]), getStudentsList);
-router.get("/students/:_id", verifyToken, checkRole(["mentor"]), getIndividualStudent);
+router.use(verifyToken, checkRole(["mentor"]));
+
+
+router.get("/dashboard", getDashboard);
+router.get("/courses/:_id", getIndividualCourse);
+router.get("/courses", getCoursesList);
+router.get("/students", getStudentsList);
+router.get("/students/:_id", getIndividualStudent);
 
 module.exports = router;

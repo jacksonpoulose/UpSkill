@@ -12,6 +12,11 @@ const home = (req, res) => {
   const contact = (req, res) => {
     res.json({ message: "Contact us at support@example.com" });
   };
+
+  const courseCards = (req, res) => {
+    res.json({ message: "Course Cards will be displayed here" });
+  };
+
   
-  module.exports = { home, about, contact };
-  
+
+  module.exports = { home, about, contact, courseCards };
