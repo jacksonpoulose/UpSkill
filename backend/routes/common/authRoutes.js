@@ -1,7 +1,11 @@
 const express = require("express");
 const passport = require("passport");
 
-const {registerController,loginController, logoutController, forgotPasswordController, resetPasswordController} = require("../../controllers/authController")
+const {registerController, 
+  loginController, 
+  logoutController, 
+  forgotPasswordController,
+  resetPasswordController} = require("../../controllers/authController")
 
 const router = express.Router();
 
@@ -9,7 +13,8 @@ router.post("/register", registerController);
 router.post("/login", loginController);
 router.post("/logout", logoutController);
 router.post("/forgot-password", forgotPasswordController);
-router.post("/reset-password", resetPasswordController); // Assuming you have a reset password controller
+router.post("/reset-password", resetPasswordController); 
+
 
 // Step 1: Redirect user to Google login
 router.get('/google', passport.authenticate('google', {
