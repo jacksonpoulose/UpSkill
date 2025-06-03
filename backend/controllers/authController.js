@@ -46,6 +46,8 @@ const registerController = async (req, res) => {
 const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log("Login Request Body:", req.body);
+
 
     const { error } = loginValidation(req.body);
     if (error) {
