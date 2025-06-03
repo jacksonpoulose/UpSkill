@@ -10,10 +10,12 @@ import EditCourse from "./pages/admin/EditCourse"
 import Students from "./pages/admin/Students";
 import CourseCategory from "./pages/admin/CourseCategory";
 import CoursesPage from "./pages/common/CoursePage";
-import MentorRegister from "./pages/mentor/MentorRegistrationPage";
+import MentorRegister from "./pages/mentor/MentorRegistration";
 import ForgotPassword from "./pages/common/ForgotPassword";
 import StudentDashboard from "./pages/student/StudentDashboard";
 import StudentProfile from "./pages/student/StudentProfile";
+import MentorDashboard from "./pages/mentor/MentorDashboard";
+import Mentors from "./pages/admin/Mentors";
 const App = () => {
   return (
     <Routes>
@@ -33,6 +35,8 @@ const App = () => {
       <Route path="/forgot-password" element={<ForgotPassword/>}/>
       <Route path="/studentdashboard" element={<StudentDashboard/>}/>
       <Route path="/studentdashboard/profile" element={<StudentProfile/>}/>
+      <Route path="/mentor/mentordashboard" element={<MentorDashboard/>}/>
+      <Route path="/admin/mentors" element={<Mentors/>}/>
 
     </Routes>
   );

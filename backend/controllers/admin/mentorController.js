@@ -1,12 +1,14 @@
 const Users = require("../../models/userModel");
 const Courses = require("../../models/course/course");
+const Mentor=require("../../models/mentorProfile")
 
-const getMentors = (req, res) => {
+const getMentors = async (req, res) => {
   try {
-    res.status(200).json({ message: "welcome to Mentors page" });
+    const mentors = await Mentor.find(); // You can customize with filters if needed
+    res.status(200).json({ mentors });
   } catch (error) {
-    console.log(error);
-    res.status(404).json({ message: "page not found" });
+    console.error("Error fetching mentors:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
