@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const upload=require("../../middlewares/multer")
 const { getDashboard } = require("../../controllers/admin/adminController");
 const {
   getCourses,
@@ -34,8 +35,8 @@ router.post("/category/add", postAddCategory);
 router.put("/category/:id/edit", postEditCategory);
 router.delete("/category/:id", postDeleteCategory);
 
-router.post("/courses/add", postAddCourse);
-router.put("/courses/:id/edit", postEditCourse);
+router.post("/courses/add", upload.single("courseImage"), postAddCourse);
+router.put("/courses/:id/edit", upload.single("courseImage"), postEditCourse);
 router.delete("/courses/:id", postDeleteCourse);
 
 router.get("/courses/:id", getIndividualCourse);

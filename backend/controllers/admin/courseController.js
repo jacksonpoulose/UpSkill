@@ -3,7 +3,7 @@ const Courses = require("../../models/course/course");
 
 const getCourses = async (req, res) => {
   try {
-    const courses = await Courses.find();
+    const courses = await Courses.find().populate("category", "name");
     res.status(200).json({ message: "welcome to Courses", courses });
   } catch (error) {
     console.log(error);
@@ -13,8 +13,9 @@ const getCourses = async (req, res) => {
 
 const getCoursesCards = async (req, res) => {
   try {
-    const courses = await Courses.find().select("title description category durationWeeks startDate endDate");
-    res.status(200).json({ message: "Courses retrieved successfully", courses });
+    const courses = await Courses.find()
+    .select("title description category durationWeeks startDate endDate")
+    .populate("category", "name");    res.status(200).json({ message: "Courses retrieved successfully", courses });
   } catch (error) {
     console.error("Error retrieving courses:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -23,9 +24,7 @@ const getCoursesCards = async (req, res) => {
 
 const postAddCourse = async (req, res) => {
   try {
-    const { title, description, category, durationWeeks, mentorIds, startDate, endDate } = req.body;
-
-    const course = await Courses.create({
+    const {
       title,
       description,
       category,
@@ -33,10 +32,23 @@ const postAddCourse = async (req, res) => {
       mentorIds,
       startDate,
       endDate,
-      studentsEnrolled: [], // initialize as empty array
-    });
+      courseFee,
+    } = req.body;
 
-    
+    const courseImage = req.file ? req.file.filename : null;
+
+    const course = await Courses.create({
+      title,
+      description,
+      category,
+      durationWeeks,
+      mentorIds: mentorIds ? JSON.parse(mentorIds) : [],
+      startDate,
+      endDate,
+      courseFee,
+      courseImage,
+      studentsEnrolled: [],
+    });
 
     res.status(201).json(course);
   } catch (err) {
@@ -44,6 +56,7 @@ const postAddCourse = async (req, res) => {
     res.status(500).json({ message: "Error creating course" });
   }
 };
+
 
 const getIndividualCourse = async (req, res) => {
   try {
@@ -79,6 +92,11 @@ const postEditCourse = async (req, res) => {
     if (mentorIds !== undefined) updates.mentorIds = mentorIds;
     if (startDate !== undefined) updates.startDate = startDate;
     if (endDate !== undefined) updates.endDate = endDate;
+
+    if (req.file) {
+      // Assuming multer saves file and path is accessible via req.file.path
+      updates.courseImageUrl = req.file.path; // or req.file.location if uploading to S3
+    }
 
     const updatedCourse = await Courses.findByIdAndUpdate(courseId, updates, {
       new: true,

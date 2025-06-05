@@ -13,6 +13,7 @@ import {
   BookOpen,
 } from "lucide-react";
 import ProgressBar from "../../components/common/ProgressBar";
+import axiosInstance from "../../api/axiosInstance";
 
 const Students = () => {
   const [students, setStudents] = useState([]);
@@ -23,20 +24,16 @@ const Students = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const res = await axios.get(
-          "http://localhost:3000/api/v1/admin/students",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        setLoading(true); // Start loading
+        const res = await axiosInstance.get("/admin/students");
         setStudents(res.data.students || []);
       } catch (error) {
         console.error("Failed to fetch students:", error);
       } finally {
-        setLoading(false);
+        setLoading(false); // Stop loading
       }
     };
+    
 
     fetchStudents();
   }, []);

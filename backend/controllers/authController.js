@@ -109,15 +109,24 @@ const forgotPasswordController = async (req, res) => {
       expiresIn: "1h",
     });
 
-    const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${token}`;
+    console.log("CLIENT_URL from env:", process.env.CLIENT_URL);
+    // const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${token}`;
+    const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${encodeURIComponent(token)}`;
+
+    console.log("CLIENT_URL inside forgotPasswordController:", process.env.CLIENT_URL);
 
     const htmlContent = `
-      <h1>Password Reset</h1>
-      <p>You requested to reset your password.</p>
-      <a href="${resetUrl}">Click here to reset your password</a>
-      <p>This link will expire in 1 hour.</p>
-    `;
+  <h1>Password Reset</h1>
+  <p>You requested to reset your password.</p>
+  <a href="${resetUrl}">Click here to reset your password</a>
+  <p>If the link doesn't work, copy and paste this URL in your browser:</p>
+  <p>${resetUrl}</p>
+  <p>This link will expire in 1 hour.</p>
+`;
 
+    console.log("resetUrl:", resetUrl);
+    console.log("htmlContent:", htmlContent);
+    
     await sendEmail({
       to: user.email,
       subject: "Reset Your Password",
