@@ -6,7 +6,7 @@ import Sidebar from "../../components/admin/Sidebar";
 import Button from "../../components/common/Button";
 import Notification from "../../components/common/Notification";
 import { Plus, Search, MoreVertical, Edit2, Trash2, BookOpen } from "lucide-react";
-
+import axiosInstance from '../../api/axiosInstance';
 const Courses = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -26,13 +26,10 @@ const Courses = () => {
   const fetchCourses = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:3000/api/v1/admin/courses", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axiosInstance.get('/admin/courses');
       setCourses(res.data.courses || []);
     } catch (error) {
-      console.error("Failed to fetch courses:", error);
+      console.error('Failed to fetch courses:', error);
       showNotification('error', 'Failed to fetch courses');
     } finally {
       setLoading(false);

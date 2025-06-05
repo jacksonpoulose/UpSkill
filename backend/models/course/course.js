@@ -1,4 +1,3 @@
-// models/Course.js
 const mongoose = require('mongoose');
 
 const courseSchema = new mongoose.Schema({
@@ -10,6 +9,12 @@ const courseSchema = new mongoose.Schema({
   studentsEnrolled: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   startDate: { type: Date },
   endDate: { type: Date },
+  courseFee: { type: Number, required: true }, // e.g., 4999
+  courseImage: { type: String }, 
+  isPublished: {
+    type: Boolean,
+    default: false,
+  },
 }, {
   timestamps: true
 });

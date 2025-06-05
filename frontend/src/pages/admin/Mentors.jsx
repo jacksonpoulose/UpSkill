@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Sidebar from "../../components/admin/Sidebar";
 import Button from "../../components/common/Button";
+import axiosInstance from "../../api/axiosInstance";
 import {
   Plus,
   Search,
@@ -25,22 +26,18 @@ const Mentors = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchMentors = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const res = await axios.get(
-          "http://localhost:3000/api/v1/admin/mentors",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        setMentors(res.data.mentors || []);
-      } catch (error) {
-        console.error("Failed to fetch mentors:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  
+const fetchMentors = async () => {
+  try {
+    setLoading(true);
+    const res = await axiosInstance.get("/admin/mentors");
+    setMentors(res.data.mentors || []);
+  } catch (error) {
+    console.error("Failed to fetch mentors:", error);
+  } finally {
+    setLoading(false);
+  }
+};
 
     fetchMentors();
   }, []);

@@ -16,6 +16,8 @@ import StudentDashboard from "./pages/student/StudentDashboard";
 import StudentProfile from "./pages/student/StudentProfile";
 import MentorDashboard from "./pages/mentor/MentorDashboard";
 import Mentors from "./pages/admin/Mentors";
+import ResetPassword from "./pages/common/ResetPassword";
+import Users from "./pages/admin/Users";
 const App = () => {
   return (
     <Routes>
@@ -36,7 +38,9 @@ const App = () => {
       <Route path="/studentdashboard" element={<StudentDashboard/>}/>
       <Route path="/studentdashboard/profile" element={<StudentProfile/>}/>
       <Route path="/mentor/mentordashboard" element={<MentorDashboard/>}/>
-      <Route path="/admin/mentors" element={<Mentors/>}/>
+      <Route path="/reset-password" element={<ResetPassword />} />
+
+      <Route path="/admin/users" element={<Users/>}/>
 
     </Routes>
   );

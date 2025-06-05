@@ -6,6 +6,7 @@ import AddCategoryModal from "../../components/modal/AddCategoryModal";
 import EditCategoryModal from "../../components/modal/EditCategoryModal";
 import Notification from "../../components/common/Notification";
 import { Plus, Search, Edit2, Trash2 } from "lucide-react";
+import axiosInstance from "../../api/axiosInstance";
 
 const CourseCategory = () => {
   const [categories, setCategories] = useState([]);
@@ -24,13 +25,11 @@ const CourseCategory = () => {
     fetchCategories();
   }, []);
 
+
   const fetchCategories = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:3000/api/v1/admin/category", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axiosInstance.get('/admin/category');
       setCategories(res.data.categories || []);
     } catch (error) {
       console.error("Failed to fetch categories:", error);
@@ -71,13 +70,9 @@ const CourseCategory = () => {
 
   const handleDeleteCategory = async (id) => {
     if (!window.confirm("Are you sure you want to delete this category?")) return;
-
+  
     try {
-      const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:3000/api/v1/admin/category/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
+      await axiosInstance.delete(`/admin/category/${id}`);
       setCategories((prev) => prev.filter((cat) => cat._id !== id));
       showNotification("success", "Category deleted successfully");
     } catch (error) {
