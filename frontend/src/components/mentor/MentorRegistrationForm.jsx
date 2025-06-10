@@ -1,5 +1,8 @@
 // File: MentorRegistrationForm.jsx
 import React, { useState } from 'react';
+import axiosInstance from '../../api/axiosInstance';   
+import { toast } from 'react-toastify';      
+
 import { 
   ChevronRight, 
   ChevronLeft, 
@@ -104,13 +107,29 @@ const MentorRegistrationForm = () => {
   const handleNext = () => validateStep() && setCurrentStep(prev => prev + 1);
   const handlePrevious = () => setCurrentStep(prev => prev - 1);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validateStep()) {
-      console.log('Submitted', formData);
-      alert('Form submitted!');
-    }
-  };
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!validateStep()) return;
+
+  try {
+    // ✅ hit your protected endpoint
+    const { data } = await axiosInstance.post(
+      '/user/mentorregistration',      // << route defined below
+      formData
+    );
+    toast.success(data.message || 'Application submitted!');
+    // optional: redirect or reset
+    setCurrentStep(1);
+    setFormData(initialState);  // extract the object you used in useState
+  } catch (err) {
+    console.error(err);
+    /* server may respond with { message: '…' } */
+    const msg =
+      err?.response?.data?.message || 'Something went wrong. Try again.';
+    toast.error(msg);
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">

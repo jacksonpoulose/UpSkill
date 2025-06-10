@@ -1,6 +1,8 @@
 const Users = require("../../models/userModel");
 const Courses = require("../../models/course/course");
-
+const Category=require("../../models/course/category")
+const fs = require("fs");
+const path = require("path");
 const getCourses = async (req, res) => {
   try {
     const courses = await Courses.find().populate("category", "name");
@@ -60,30 +62,41 @@ const postAddCourse = async (req, res) => {
 
 const getIndividualCourse = async (req, res) => {
   try {
-    const { _id } = req.params;
-    const course = await Courses.findById(_id);
+    const { id } = req.params;
+
+    const course = await Courses.findById(id).populate("category");
 
     if (!course) {
       return res.status(404).json({ message: "Course not found" });
     }
 
-    res.status(200).json({ message: `Welcome to Course ${_id}`, course });
+    res.status(200).json({ message: `Welcome to Course ${id}`, course });
   } catch (error) {
     res.status(500).json({ message: "Server Error", error: error.message });
   }
 };
 
+
 const postEditCourse = async (req, res) => {
   try {
     const courseId = req.params.id;
-    const { title, description, category, durationWeeks, mentorIds, startDate, endDate } = req.body;
+    const {
+      title,
+      description,
+      category,
+      durationWeeks,
+      mentorIds,
+      startDate,
+      endDate,
+      existingImage,
+      imageRemoved,
+    } = req.body;
 
     const course = await Courses.findById(courseId);
     if (!course) {
       return res.status(404).json({ message: "Course not found" });
     }
 
-    // Build update object dynamically
     const updates = {};
     if (title !== undefined) updates.title = title;
     if (description !== undefined) updates.description = description;
@@ -93,9 +106,30 @@ const postEditCourse = async (req, res) => {
     if (startDate !== undefined) updates.startDate = startDate;
     if (endDate !== undefined) updates.endDate = endDate;
 
+    // ✅ New image uploaded? Replace
     if (req.file) {
-      // Assuming multer saves file and path is accessible via req.file.path
-      updates.courseImageUrl = req.file.path; // or req.file.location if uploading to S3
+      // Optionally delete the old image
+      if (course.courseImage) {
+        const oldPath = path.join(__dirname, "../../uploads/courses", course.courseImage);
+        if (fs.existsSync(oldPath)) {
+          fs.unlinkSync(oldPath);
+        }
+      }
+      updates.courseImage = req.file.filename;
+    } 
+    // ✅ Image removed by user
+    else if (imageRemoved === "true") {
+      if (course.courseImage) {
+        const oldPath = path.join(__dirname, "../../uploads/courses", course.courseImage);
+        if (fs.existsSync(oldPath)) {
+          fs.unlinkSync(oldPath);
+        }
+      }
+      updates.courseImage = null;
+    } 
+    // ✅ Image untouched, retain old image
+    else if (existingImage) {
+      updates.courseImage = existingImage;
     }
 
     const updatedCourse = await Courses.findByIdAndUpdate(courseId, updates, {
@@ -108,6 +142,7 @@ const postEditCourse = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 const postDeleteCourse = async (req, res) => {
   try {

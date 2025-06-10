@@ -7,6 +7,7 @@ const FormSelect = ({
   onChange, 
   required = false, 
   options = [],
+  error,
   className = "" 
 }) => {
   return (
@@ -18,7 +19,9 @@ const FormSelect = ({
         name={name}
         value={value}
         onChange={onChange}
-        className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${className}`}
+        className={`w-full px-4 py-2 border rounded-lg focus:ring-2 transition-all ${
+          error ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
+        } ${className}`}
         required={required}
       >
         {options.map((option, index) => (
@@ -27,6 +30,7 @@ const FormSelect = ({
           </option>
         ))}
       </select>
+      {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
     </div>
   );
 };

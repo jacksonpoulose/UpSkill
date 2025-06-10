@@ -11,11 +11,13 @@ import FormActions from "../../components/admin/course/FormAction";
 import Notification from "../../components/common/Notification";
 import PageHeader from "../../components/admin/PageHeader";
 import axiosInstance from "../../api/axiosInstance";
+
 const AddCourse = () => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [formProgress, setFormProgress] = useState(0);
+  const [errors, setErrors] = useState({});
   const [notification, setNotification] = useState({
     type: "success",
     message: "",
@@ -58,7 +60,6 @@ const AddCourse = () => {
       courseData.courseFee,
       image
     ];
-    
     const filledFields = fields.filter(field => field).length;
     const progress = Math.round((filledFields / fields.length) * 100);
     setFormProgress(progress);
@@ -91,21 +92,44 @@ const AddCourse = () => {
   };
 
   const showNotification = (type, message) => {
-    setNotification({
-      type,
-      message,
-      isVisible: true,
-    });
+    setNotification({ type, message, isVisible: true });
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!courseData.title.trim()) newErrors.title = "Title is required";
+    if (!courseData.description.trim()) newErrors.description = "Description is required";
+    if (!courseData.category) newErrors.category = "Category is required";
+    if (!courseData.durationWeeks || isNaN(courseData.durationWeeks)) newErrors.durationWeeks = "Valid duration is required";
+    if (!courseData.courseFee || isNaN(courseData.courseFee)) newErrors.courseFee = "Valid fee is required";
+    if (!image) newErrors.image = "Course image is required";
+
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      const firstErrorKey = Object.keys(newErrors)[0];
+      const element = document.querySelector(`[name="${firstErrorKey}"]`);
+      if (element) element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      showNotification("error", "Please fix the form errors");
+      return;
+    }
+
     setLoading(true);
-  
     try {
       const token = localStorage.getItem("token");
       const formData = new FormData();
-  
+
       Object.entries(courseData).forEach(([key, value]) => {
         if (Array.isArray(value)) {
           value.forEach((v) => formData.append(`${key}[]`, v));
@@ -113,18 +137,18 @@ const AddCourse = () => {
           formData.append(key, value);
         }
       });
-  
+
       if (image) {
         formData.append("courseImage", image);
       }
-  
+
       await axios.post("http://localhost:3000/api/v1/admin/courses/add", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       });
-  
+
       showNotification("success", "Course added successfully");
       setTimeout(() => navigate("/admin/courses"), 1500);
     } catch (error) {
@@ -167,16 +191,19 @@ const AddCourse = () => {
                 courseData={courseData}
                 categories={categories}
                 handleInputChange={handleInputChange}
+                errors={errors}
               />
 
               <DurationSection 
                 durationWeeks={courseData.durationWeeks}
                 handleInputChange={handleInputChange}
+                errors={errors}
               />
 
               <PricingSection 
                 courseFee={courseData.courseFee}
                 handleInputChange={handleInputChange}
+                errors={errors}
               />
 
               <ImageUploadSection 
@@ -184,6 +211,7 @@ const AddCourse = () => {
                 handleImageChange={handleImageChange}
                 setImage={setImage}
                 setPreview={setPreview}
+                error={errors.image}
               />
 
               <FormActions loading={loading} />
