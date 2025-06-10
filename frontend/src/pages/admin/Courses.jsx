@@ -1,23 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { format } from "date-fns";
 import Sidebar from "../../components/admin/Sidebar";
 import Button from "../../components/common/Button";
 import Notification from "../../components/common/Notification";
-import { Plus, Search, MoreVertical, Edit2, Trash2, BookOpen } from "lucide-react";
-import axiosInstance from '../../api/axiosInstance';
+import {
+  Plus,
+  Search,
+  MoreVertical,
+  Edit2,
+  Trash2,
+  BookOpen,
+} from "lucide-react";
+import axiosInstance from "../../api/axiosInstance";
+import ConfirmationModal from "../../components/common/ConfirmationModal";
+
 const Courses = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [notification, setNotification] = useState({
-    type: 'success',
-    message: '',
-    isVisible: false
+    type: "success",
+    message: "",
+    isVisible: false,
   });
 
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCourseId, setSelectedCourseId] = useState(null);
+  const [selectedCourseTitle, setSelectedCourseTitle] = useState("");
 
   useEffect(() => {
     fetchCourses();
@@ -26,11 +37,11 @@ const Courses = () => {
   const fetchCourses = async () => {
     try {
       setLoading(true);
-      const res = await axiosInstance.get('/admin/courses');
+      const res = await axiosInstance.get("/admin/courses");
       setCourses(res.data.courses || []);
     } catch (error) {
-      console.error('Failed to fetch courses:', error);
-      showNotification('error', 'Failed to fetch courses');
+      console.error("Failed to fetch courses:", error);
+      showNotification("error", "Failed to fetch courses");
     } finally {
       setLoading(false);
     }
@@ -44,28 +55,36 @@ const Courses = () => {
     setNotification({
       type,
       message,
-      isVisible: true
+      isVisible: true,
     });
   };
 
-  const handleDeleteCourse = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this course?')) return;
+  const openDeleteModal = (id, title) => {
+    setSelectedCourseId(id);
+    setSelectedCourseTitle(title);
+    setIsModalOpen(true);
+  };
 
+  const confirmDeleteCourse = async () => {
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:3000/api/v1/admin/courses/${id}`, {
+      await axiosInstance.delete(`/admin/courses/${selectedCourseId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      setCourses(prev => prev.filter(course => course._id !== id));
-      showNotification('success', 'Course deleted successfully');
+      setCourses((prev) =>
+        prev.filter((course) => course._id !== selectedCourseId)
+      );
+      showNotification("success", "Course deleted successfully");
     } catch (error) {
       console.error("Failed to delete course:", error);
-      showNotification('error', 'Failed to delete course');
+      showNotification("error", "Failed to delete course");
+    } finally {
+      setIsModalOpen(false);
     }
   };
 
-  const filteredCourses = courses.filter(course =>
+  const filteredCourses = courses.filter((course) =>
     course.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -78,7 +97,11 @@ const Courses = () => {
             <h1 className="text-2xl font-bold text-gray-900">Courses</h1>
             <p className="text-gray-600">Manage your course catalog</p>
           </div>
-          <Button variant="blue" className="flex items-center space-x-2" onClick={handleAddCourse}>
+          <Button
+            variant="blue"
+            className="flex items-center space-x-2"
+            onClick={handleAddCourse}
+          >
             <Plus size={20} />
             <span>Add Course</span>
           </Button>
@@ -110,25 +133,58 @@ const Courses = () => {
               <table className="w-full">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course Details</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duration</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Students</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dates</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Course
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Category
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Duration
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Mentors
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Students Enrolled
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Fee
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Published
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredCourses.map(course => (
-                    <tr key={course._id} className="hover:bg-gray-50 transition-colors">
+                  {filteredCourses.map((course) => (
+                    <tr
+                      key={course._id}
+                      className="hover:bg-gray-50 transition-colors"
+                    >
                       <td className="px-6 py-4">
                         <div className="flex items-center">
-                          <div className="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <BookOpen className="h-5 w-5 text-blue-600" />
-                          </div>
+                          {course.courseImage ? (
+                            <img
+                              src={`http://localhost:3000/uploads/courses/${course.courseImage}`}
+                              alt={course.title}
+                              className="h-10 w-10 rounded-lg object-cover"
+                            />
+                          ) : (
+                            <div className="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                              <BookOpen className="h-5 w-5 text-blue-600" />
+                            </div>
+                          )}
                           <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">{course.title}</div>
-                            <div className="text-sm text-gray-500 line-clamp-1">{course.description}</div>
+                            <div className="text-sm font-medium text-gray-900">
+                              {course.title}
+                            </div>
+                            <div className="text-sm text-gray-500 line-clamp-1">
+                              {course.description}
+                            </div>
                           </div>
                         </div>
                       </td>
@@ -141,15 +197,26 @@ const Courses = () => {
                         {course.durationWeeks} weeks
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {course.mentorIds?.length || 0} mentor
+                        {course.mentorIds?.length === 1 ? "" : "s"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {course.studentsEnrolled?.length || 0} enrolled
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {course.startDate ? format(new Date(course.startDate), 'MMM d, yyyy') : 'Not set'}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          to {course.endDate ? format(new Date(course.endDate), 'MMM d, yyyy') : 'Not set'}
-                        </div>
+
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ₹{course.courseFee?.toLocaleString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        {course.isPublished ? (
+                          <span className="px-2 py-1 rounded bg-green-100 text-green-800 font-semibold">
+                            Published
+                          </span>
+                        ) : (
+                          <span className="px-2 py-1 rounded bg-gray-200 text-gray-600 font-semibold">
+                            Draft
+                          </span>
+                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <div className="flex items-center space-x-3">
@@ -161,12 +228,15 @@ const Courses = () => {
                             <Edit2 size={18} />
                           </Link>
                           <button
-                            onClick={() => handleDeleteCourse(course._id)}
+                            onClick={() =>
+                              openDeleteModal(course._id, course.title)
+                            }
                             className="text-gray-600 hover:text-red-600 transition-colors p-1 rounded-full hover:bg-gray-100"
                             aria-label="Delete course"
                           >
                             <Trash2 size={18} />
                           </button>
+
                           <button
                             className="text-gray-600 hover:text-gray-900 transition-colors p-1 rounded-full hover:bg-gray-100"
                             aria-label="More options"
@@ -185,7 +255,9 @@ const Courses = () => {
               <div className="mb-4 text-gray-400">
                 <BookOpen size={48} className="mx-auto opacity-40" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No courses found</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No courses found
+              </h3>
               <p className="text-gray-500 mb-6">
                 {searchQuery
                   ? `No results found for "${searchQuery}"`
@@ -210,8 +282,22 @@ const Courses = () => {
         type={notification.type}
         message={notification.message}
         isVisible={notification.isVisible}
-        onClose={() => setNotification(prev => ({ ...prev, isVisible: false }))}
+        onClose={() =>
+          setNotification((prev) => ({ ...prev, isVisible: false }))
+        }
       />
+      <ConfirmationModal
+  isOpen={isModalOpen}
+  title="Delete Course"
+  message="Are you sure you want to delete the following course?"
+  itemName={selectedCourseTitle}
+  confirmLabel="Delete"
+  cancelLabel="Cancel"
+  onConfirm={confirmDeleteCourse}
+  onCancel={() => setIsModalOpen(false)}
+  variant="danger"
+/>
+
     </div>
   );
 };

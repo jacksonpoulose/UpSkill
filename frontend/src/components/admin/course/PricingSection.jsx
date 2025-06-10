@@ -1,9 +1,8 @@
 import React from "react";
 import { DollarSign } from "lucide-react";
 import FormSection from "./FormSection";
-import FormInput from "../../common/FormInput";
 
-const PricingSection = ({ courseFee, handleInputChange }) => {
+const PricingSection = ({ courseFee, handleInputChange, errors }) => {
   return (
     <FormSection 
       title="Pricing and Mentors" 
@@ -21,11 +20,15 @@ const PricingSection = ({ courseFee, handleInputChange }) => {
               name="courseFee"
               value={courseFee}
               onChange={handleInputChange}
-              className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-              required
+              className={`w-full pl-8 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
+                errors?.courseFee ? 'border-red-500' : 'border-gray-300'
+              }`}
               min="0"
             />
           </div>
+          {errors?.courseFee && (
+            <p className="text-red-500 text-sm mt-1">{errors.courseFee}</p>
+          )}
         </div>
       </div>
     </FormSection>
