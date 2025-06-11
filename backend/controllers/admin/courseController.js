@@ -39,12 +39,15 @@ const postAddCourse = async (req, res) => {
 
     const courseImage = req.file ? req.file.filename : null;
 
+
     const course = await Courses.create({
       title,
       description,
       category,
       durationWeeks,
+
       mentorIds: mentorIds ? JSON.parse(mentorIds) : [],
+
       startDate,
       endDate,
       courseFee,
@@ -168,5 +171,4 @@ module.exports = {
   getIndividualCourse,
   postEditCourse,
   postDeleteCourse,
-  getCoursesCards
 };
