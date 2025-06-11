@@ -11,19 +11,10 @@ const getCourses = async (req, res) => {
   }
 };
 
-const getCoursesCards = async (req, res) => {
-  try {
-    const courses = await Courses.find().select("title description category durationWeeks startDate endDate");
-    res.status(200).json({ message: "Courses retrieved successfully", courses });
-  } catch (error) {
-    console.error("Error retrieving courses:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
 
 const postAddCourse = async (req, res) => {
   try {
-    const { title, description, category, durationWeeks, mentorIds, startDate, endDate } = req.body;
+    const { title, description, category, durationWeeks, mentorIds, startDate, endDate, courseFee, courseImage   } = req.body;
 
     const course = await Courses.create({
       title,
@@ -31,12 +22,14 @@ const postAddCourse = async (req, res) => {
       category,
       durationWeeks,
       mentorIds,
+      courseFee,
+      courseImage,
       startDate,
       endDate,
       studentsEnrolled: [], // initialize as empty array
     });
 
-    
+       
 
     res.status(201).json(course);
   } catch (err) {
@@ -115,5 +108,4 @@ module.exports = {
   getIndividualCourse,
   postEditCourse,
   postDeleteCourse,
-  getCoursesCards
 };
