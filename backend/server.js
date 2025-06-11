@@ -1,20 +1,23 @@
+require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 const connectDB = require("./config/db.js");
 const passport = require("passport");
-const dotenv = require("dotenv");
 const morgan = require("morgan");
 const routes = require("./routes");
 const sessionMiddleware = require("./config/session");
 
 const app = express();
 
-dotenv.config();
 connectDB();
 
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use("/api/v1", routes);
 

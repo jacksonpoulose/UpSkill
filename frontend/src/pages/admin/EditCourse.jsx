@@ -1,45 +1,92 @@
-import React, { useState, useEffect } from 'react';
-import Sidebar from '../../components/admin/Sidebar';
-import Button from '../../components/common/Button';
-import { ArrowLeft, Upload } from 'lucide-react';
-import { Link, useParams } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import axiosInstance from "../../api/axiosInstance";
+
+import Sidebar from "../../components/admin/Sidebar";
+import CourseBasicsSection from "../../components/admin/course/CourseBasicsSection";
+import DurationSection from "../../components/admin/course/DurationSection";
+import PricingSection from "../../components/admin/course/PricingSection";
+import ImageUploadSection from "../../components/admin/course/ImageUploadSection";
+import FormActions from "../../components/admin/course/FormAction";
+import Notification from "../../components/common/Notification";
+import PageHeader from "../../components/admin/PageHeader";
 
 const EditCourse = () => {
   const { id } = useParams();
-  const [courseData, setCourseData] = useState({
-    title: '',
-    category: '',
-    duration: '',
-    fees: '',
-    description: '',
-    requirements: '',
-    mentors: 1,
-    image: null,
-    currentImage: '',
-    status: 'Active',
-    rating: 0,
-    enrolledStudents: 0,
+  const navigate = useNavigate();
+  const [imageRemoved, setImageRemoved] = useState(false);
+
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
+  const [formProgress, setFormProgress] = useState(0);
+  const [errors, setErrors] = useState({});
+
+  const [notification, setNotification] = useState({
+    type: "success",
+    message: "",
+    isVisible: false,
   });
 
+  const [courseData, setCourseData] = useState({
+    title: "",
+    description: "",
+    category: "",
+    durationWeeks: "",
+    mentorIds: [],
+    courseFee: "",
+  });
+
+  const [image, setImage] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [existingImageUrl, setExistingImageUrl] = useState(null);
+
   useEffect(() => {
-    const fetchCourseData = () => {
+    fetchCategories();
+    fetchCourseDetails();
+  }, []);
+
+  useEffect(() => {
+    calculateFormProgress();
+  }, [courseData, image]);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axiosInstance.get("/admin/category");
+      setCategories(response.data.categories || []);
+    } catch (error) {
+      console.error("Failed to fetch categories:", error);
+      showNotification("error", "Failed to fetch categories");
+    }
+  };
+
+  const fetchCourseDetails = async () => {
+    try {
+      setFetching(true);
+      const response = await axiosInstance.get(`/admin/courses/${id}`);
+      const course = response.data.course;
+
       setCourseData({
-        title: 'Web Development Fundamentals',
-        category: 'Web Development',
-        duration: '12 weeks',
-        fees: '99.99',
-        description: 'Learn the fundamentals of web development...',
-        requirements: 'Basic understanding of HTML and CSS',
-        mentors: 3,
-        image: null,
-        currentImage: 'https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg',
-        status: 'Active',
-        rating: 4.8,
-        enrolledStudents: 156,
+        title: course.title || "",
+        description: course.description || "",
+        category: course.category?._id || "",
+        durationWeeks: course.durationWeeks || "",
+        courseFee: course.courseFee || "",
+        mentorIds: course.mentorIds || [],
       });
-    };
-    fetchCourseData();
-  }, [id]);
+
+      if (course.courseImage) {
+        const fullImageUrl = `http://localhost:3000/uploads/courses/${course.courseImage}`;
+        setExistingImageUrl(fullImageUrl);
+        setPreview(fullImageUrl);
+      }
+    } catch (error) {
+      console.error("Failed to fetch course details:", error);
+      showNotification("error", "Failed to fetch course details");
+    } finally {
+      setFetching(false);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -50,251 +97,196 @@ const EditCourse = () => {
   };
 
   const handleImageChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setCourseData((prev) => ({
-        ...prev,
-        image: e.target.files[0],
-      }));
+    const file = e.target.files?.[0];
+    if (file) {
+      setImage(file);
+      setPreview(URL.createObjectURL(file));
+      setExistingImageUrl(null);
+      setImageRemoved(false);
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Updated course data:', courseData);
+  const handleRemoveImage = () => {
+    console.log("Removing image...");
+    setImage(null);
+    setPreview(null);
+    setExistingImageUrl(null);
+    setImageRemoved(true);
   };
+  
+  const showNotification = (type, message) => {
+    setNotification({
+      type,
+      message,
+      isVisible: true,
+    });
+  };
+
+  const calculateFormProgress = () => {
+    const fields = [
+      courseData.title,
+      courseData.description,
+      courseData.category,
+      courseData.durationWeeks,
+      courseData.courseFee,
+      image || existingImageUrl,
+    ];
+
+    const filledFields = fields.filter((field) => field).length;
+    const progress = Math.round((filledFields / fields.length) * 100);
+    setFormProgress(progress);
+  };
+
+  // ✅ Validation Function
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!courseData.title.trim()) newErrors.title = "Course title is required";
+    if (!courseData.description.trim())
+      newErrors.description = "Description is required";
+    if (!courseData.category) newErrors.category = "Category is required";
+    if (!courseData.durationWeeks)
+      newErrors.durationWeeks = "Duration is required";
+    if (!courseData.courseFee || courseData.courseFee < 0)
+      newErrors.courseFee = "Valid course fee is required";
+
+    // If image removed and no new image uploaded
+    if (imageRemoved && !image)
+      newErrors.courseImage = "Course image is required";
+
+    // If no old image and no new image
+    if (!existingImageUrl && !image)
+      newErrors.courseImage = "Course image is required";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrors({});
+
+    if (!validateForm()) {
+      showNotification("error", "Please fix the validation errors.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const formData = new FormData();
+
+      Object.entries(courseData).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          value.forEach((v) => formData.append(`${key}[]`, v));
+        } else {
+          formData.append(key, value);
+        }
+      });
+
+      if (image) {
+        formData.append("courseImage", image);
+      } else if (existingImageUrl) {
+        const existingFileName = existingImageUrl.split("/").pop();
+        formData.append("existingImage", existingFileName);
+      }
+
+      formData.append("imageRemoved", imageRemoved ? "true" : "false");
+
+      await axiosInstance.put(`/admin/courses/${id}/edit`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      showNotification("success", "Course updated successfully");
+      setTimeout(() => navigate("/admin/courses"), 1500);
+    } catch (error) {
+      console.error("Error updating course:", error);
+      showNotification("error", "Failed to update course");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (fetching) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="inline-block animate-spin rounded-full h-10 w-10 border-4 border-gray-200 border-t-blue-500"></div>
+        <p className="ml-4 text-gray-700">Loading course details...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-gray-50">
       <Sidebar />
-      <main className="flex-1 ml-64 p-8">
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center space-x-4">
-            <Link to="/admin/courses">
-              <Button variant="outline" className="flex items-center space-x-2">
-                <ArrowLeft size={20} />
-                <span>Back to Courses</span>
-              </Button>
-            </Link>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Edit Course</h1>
-              <p className="text-gray-600">Update course information</p>
+
+      <main className="flex-1 ml-64 p-8 overflow-y-auto">
+        <div className="max-w-4xl mx-auto">
+          <PageHeader
+            title="Edit Course"
+            subtitle="Update your course details"
+            backLink="/admin/courses"
+            backLabel="Back to Courses"
+          />
+
+          <div className="mb-6">
+            <div className="h-2 bg-gray-200 rounded-full">
+              <div
+                className="h-full bg-blue-600 rounded-full transition-all duration-300 ease-in-out"
+                style={{ width: `${formProgress}%` }}
+              ></div>
+            </div>
+            <div className="flex justify-between mt-2 text-sm text-gray-500">
+              <span>Progress</span>
+              <span>{formProgress}% Complete</span>
             </div>
           </div>
-        </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Course Title
-                </label>
-                <input
-                  type="text"
-                  name="title"
-                  value={courseData.title}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                  placeholder="Enter course title"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Category
-                </label>
-                <select
-                  name="category"
-                  value={courseData.category}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                  required
-                >
-                  <option value="">Select category</option>
-                  <option value="Web Development">Web Development</option>
-                  <option value="Data Science">Data Science</option>
-                  <option value="Mobile Development">Mobile Development</option>
-                  <option value="UI/UX Design">UI/UX Design</option>
-                  <option value="Machine Learning">Machine Learning</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Duration
-                </label>
-                <input
-                  type="text"
-                  name="duration"
-                  value={courseData.duration}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                  placeholder="e.g., 8 weeks"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Course Fee ($)
-                </label>
-                <input
-                  type="number"
-                  name="fees"
-                  value={courseData.fees}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                  placeholder="Enter course fee"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Number of Mentors
-                </label>
-                <input
-                  type="number"
-                  name="mentors"
-                  value={courseData.mentors}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                  min="1"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Status
-                </label>
-                <select
-                  name="status"
-                  value={courseData.status}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                  required
-                >
-                  <option value="Draft">Draft</option>
-                  <option value="Active">Active</option>
-                  <option value="Archived">Archived</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Current Rating
-                </label>
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="number"
-                    name="rating"
-                    value={courseData.rating}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50"
-                    disabled
-                  />
-                  <span className="text-yellow-500">★</span>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Enrolled Students
-                </label>
-                <input
-                  type="number"
-                  name="enrolledStudents"
-                  value={courseData.enrolledStudents}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50"
-                  disabled
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Course Description
-              </label>
-              <textarea
-                name="description"
-                value={courseData.description}
-                onChange={handleInputChange}
-                rows={4}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                placeholder="Enter course description"
-                required
+          <div className="bg-white rounded-xl shadow-sm p-8 transition-all duration-300 hover:shadow-md">
+            <form onSubmit={handleSubmit} className="space-y-8">
+              <CourseBasicsSection
+                courseData={courseData}
+                categories={categories}
+                handleInputChange={handleInputChange}
+                errors={errors}
               />
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Requirements
-              </label>
-              <textarea
-                name="requirements"
-                value={courseData.requirements}
-                onChange={handleInputChange}
-                rows={4}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                placeholder="Enter course requirements"
-                required
+              <DurationSection
+                durationWeeks={courseData.durationWeeks}
+                handleInputChange={handleInputChange}
+                errors={errors}
               />
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Course Image
-              </label>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <p className="text-sm text-gray-500 mb-2">Current Image:</p>
-                  <img
-                    src={courseData.currentImage}
-                    alt="Current course image"
-                    className="w-full h-48 object-cover rounded-lg"
-                  />
-                </div>
-                <div className="flex items-center">
-                  <div className="w-full mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg">
-                    <div className="space-y-1 text-center">
-                      <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                      <div className="flex text-sm text-gray-600">
-                        <label
-                          htmlFor="image-upload"
-                          className="relative cursor-pointer bg-white rounded-md font-medium text-red-600 hover:text-red-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-red-500"
-                        >
-                          <span>Upload new image</span>
-                          <input
-                            id="image-upload"
-                            name="image"
-                            type="file"
-                            className="sr-only"
-                            onChange={handleImageChange}
-                            accept="image/*"
-                          />
-                        </label>
-                      </div>
-                      <p className="text-xs text-gray-500">
-                        PNG, JPG, GIF up to 10MB
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+              <PricingSection
+                courseFee={courseData.courseFee}
+                handleInputChange={handleInputChange}
+                errors={errors}
+              />
 
-            <div className="flex justify-end space-x-4">
-              <Button variant="outline" type="button" as={Link} to="/admin/courses">
-                Cancel
-              </Button>
-              <Button variant="red" type="submit">
-                Update Course
-              </Button>
-            </div>
-          </form>
+              <ImageUploadSection
+                key={preview || "no-preview"} 
+                preview={preview}
+                handleImageChange={handleImageChange}
+                setImage={setImage}
+                setPreview={setPreview}
+                error={errors.courseImage}
+                handleRemoveImage={handleRemoveImage}
+              />
+
+              <FormActions loading={loading} />
+            </form>
+          </div>
         </div>
       </main>
+
+      <Notification
+        type={notification.type}
+        message={notification.message}
+        isVisible={notification.isVisible}
+        onClose={() =>
+          setNotification((prev) => ({ ...prev, isVisible: false }))
+        }
+      />
     </div>
   );
 };

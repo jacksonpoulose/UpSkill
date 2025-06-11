@@ -6,6 +6,8 @@ import AddCategoryModal from "../../components/modal/AddCategoryModal";
 import EditCategoryModal from "../../components/modal/EditCategoryModal";
 import Notification from "../../components/common/Notification";
 import { Plus, Search, Edit2, Trash2 } from "lucide-react";
+import axiosInstance from "../../api/axiosInstance";
+import ConfirmationModal from "../../components/common/ConfirmationModal";
 
 const CourseCategory = () => {
   const [categories, setCategories] = useState([]);
@@ -20,17 +22,18 @@ const CourseCategory = () => {
     isVisible: false,
   });
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+  const [selectedCategoryName, setSelectedCategoryName] = useState("");
   useEffect(() => {
     fetchCategories();
   }, []);
 
+
   const fetchCategories = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:3000/api/v1/admin/category", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axiosInstance.get('/admin/category');
       setCategories(res.data.categories || []);
     } catch (error) {
       console.error("Failed to fetch categories:", error);
@@ -69,22 +72,32 @@ const CourseCategory = () => {
     });
   };
 
-  const handleDeleteCategory = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this category?")) return;
+  const openDeleteModal = (id, name) => {
+    setSelectedCategoryId(id);
+    setSelectedCategoryName(name);
+    setIsModalOpen(true);
+  };
 
+  const confirmDeleteCategory = async () => {
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:3000/api/v1/admin/category/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axiosInstance.delete(`/admin/category/${selectedCategoryId}`);
+        headers: { Authorization: `Bearer ${token}` }
+      
 
-      setCategories((prev) => prev.filter((cat) => cat._id !== id));
+      setCategories((prev) =>
+        prev.filter((cat) => cat._id !== selectedCategoryId)
+      );
       showNotification("success", "Category deleted successfully");
     } catch (error) {
       console.error("Failed to delete category:", error);
       showNotification("error", "Failed to delete category");
+    } finally {
+      setIsModalOpen(false);
     }
   };
+
+ 
 
   const filteredCategories = categories.filter((cat) =>
     cat.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -158,7 +171,9 @@ const CourseCategory = () => {
                             <Edit2 size={18} />
                           </button>
                           <button
-                            onClick={() => handleDeleteCategory(cat._id)}
+                            onClick={() =>
+                              openDeleteModal(cat._id, cat.name)
+                            }
                             className="text-gray-600 hover:text-red-600 transition-colors p-1 rounded-full hover:bg-gray-100"
                             aria-label={`Delete ${cat.name}`}
                           >
@@ -217,7 +232,19 @@ const CourseCategory = () => {
         isVisible={notification.isVisible}
         onClose={() => setNotification((prev) => ({ ...prev, isVisible: false }))}
       />
+      <ConfirmationModal
+  isOpen={isModalOpen}
+  title="Delete Category"
+  message="Are you sure you want to delete the following category?"
+  itemName={selectedCategoryName}
+  confirmLabel="Delete"
+  cancelLabel="Cancel"
+  onConfirm={confirmDeleteCategory}
+  onCancel={() => setIsModalOpen(false)}
+  variant="danger"
+/>
     </div>
+    
   );
 };
 
