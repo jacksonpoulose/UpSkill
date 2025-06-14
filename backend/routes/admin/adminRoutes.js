@@ -46,5 +46,7 @@ router.post("/mentors/:id", getIndividualMentor);
 
 router.get("/notifications", getNotifications);
 router.post("/notifications/add", postNotification);
+router.get('/unread-count', getUnreadCount);
+
 
 module.exports = router;
