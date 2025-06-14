@@ -11,6 +11,20 @@ const getNotifications = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+const getUnreadCount = async (req, res) => {
+  try {
+    const count = await Notification.countDocuments({
+      userId: req.user._id,
+      userRole: req.user.role,
+      read: false,
+    });
+
+    res.json({ unreadCount: count });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 const postNotification = async (req, res) => {
   const { userId, userRole, message, type } = req.body;
 
@@ -32,4 +46,5 @@ const postNotification = async (req, res) => {
 module.exports = {
   getNotifications,
   postNotification,
+  getUnreadCount
 };
