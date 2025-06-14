@@ -141,7 +141,7 @@ const Login = () => {
               <Button
                 variant="outline"
                 className="w-full"
-                onClick={() => console.log('Google login')}
+                onClick={() => window.location.href = "http://localhost:3000/api/v1/auth/google"}
               >
                 Google
               </Button>

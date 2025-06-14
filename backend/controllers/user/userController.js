@@ -1,5 +1,6 @@
 const Notification = require("../../models/notificationModel");
 const MentorProfile = require("../../models/mentorProfile");
+const StudentProfile = require("../../models/studentProfile");
 const User = require("../../models/userModel");
 
 const mentorRegistration = async (req, res) => {

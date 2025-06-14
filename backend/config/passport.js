@@ -1,23 +1,22 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const User = require('../models/User');
+const User = require('../models/userModel');
 const dotenv = require('dotenv');
 dotenv.config();
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
-});     
-
-passport.deserializeUser((id, done) => {
-  User.findById(id)
-    .then(user => {
-      done(null, user);
-    })
-    .catch(err => {
-      console.error(err);
-      done(err, null);
-    });
 });
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (err) {
+    done(err, null);
+  }
+});
+
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -43,3 +42,5 @@ passport.use(new GoogleStrategy({
     }
   }
 ));
+
+module.exports = passport;

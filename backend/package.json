@@ -30,6 +30,7 @@
     "passport-github2": "^0.1.12",
     "passport-google-oauth20": "^2.0.0",
     "passport-oauth2": "^1.8.0",
+    "stripe": "^18.2.1",
     "uuid": "^11.1.0"
   }
 }
