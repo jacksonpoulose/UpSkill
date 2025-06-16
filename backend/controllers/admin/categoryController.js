@@ -14,9 +14,9 @@ const postAddCategory = async (req, res) => {
   try {
     const { name, description } = req.body;
     const category = await Category.create({ name, description });
-    res.status(201).json({ category }); // ✅ wrap it in { category }
+    res.status(201).json({ category }); 
   } catch (err) {
-    console.error("Error creating category:", err); // ✅ log full error
+    console.error("Error creating category:", err); 
     res.status(500).json({ message: "Error creating category", error: err.message });
   }
 };
@@ -45,7 +45,7 @@ const postDeleteCategory = async (req, res) => {
   try {
     const categoryId = req.params.id;
 
-    const deletedCategory = await Category.findByIdAndDelete(categoryId);
+    const deletedCategory = await Category.findByIdAndUpdate(categoryId, { isActive: false });
     if (!deletedCategory) {
       return res.status(404).json({ message: "Category not found" });
     }

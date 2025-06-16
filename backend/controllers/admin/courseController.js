@@ -13,17 +13,6 @@ const getCourses = async (req, res) => {
   }
 };
 
-const getCoursesCards = async (req, res) => {
-  try {
-    const courses = await Courses.find()
-    .select("title description category durationWeeks startDate endDate")
-    .populate("category", "name");    res.status(200).json({ message: "Courses retrieved successfully", courses });
-  } catch (error) {
-    console.error("Error retrieving courses:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-
 const postAddCourse = async (req, res) => {
   try {
     const {
@@ -79,6 +68,15 @@ const getIndividualCourse = async (req, res) => {
   }
 };
 
+const postPublishCourse = async (req, res) => {
+  try {
+    const courseId = req.params.id;
+    const course = await Courses.findByIdAndUpdate(courseId, { status: "published" });
+    res.status(200).json({ message: "Course published", course });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error", error: error.message });
+  }
+};
 
 const postEditCourse = async (req, res) => {
   try {
@@ -93,6 +91,7 @@ const postEditCourse = async (req, res) => {
       endDate,
       existingImage,
       imageRemoved,
+      status,
     } = req.body;
 
     const course = await Courses.findById(courseId);
@@ -109,7 +108,7 @@ const postEditCourse = async (req, res) => {
     if (startDate !== undefined) updates.startDate = startDate;
     if (endDate !== undefined) updates.endDate = endDate;
 
-    // ✅ New image uploaded? Replace
+    
     if (req.file) {
       // Optionally delete the old image
       if (course.courseImage) {
@@ -120,7 +119,7 @@ const postEditCourse = async (req, res) => {
       }
       updates.courseImage = req.file.filename;
     } 
-    // ✅ Image removed by user
+    
     else if (imageRemoved === "true") {
       if (course.courseImage) {
         const oldPath = path.join(__dirname, "../../uploads/courses", course.courseImage);
@@ -130,7 +129,7 @@ const postEditCourse = async (req, res) => {
       }
       updates.courseImage = null;
     } 
-    // ✅ Image untouched, retain old image
+   
     else if (existingImage) {
       updates.courseImage = existingImage;
     }
@@ -156,7 +155,7 @@ const postDeleteCourse = async (req, res) => {
       return res.status(404).json({ message: "Course not found" });
     }
 
-    await Courses.findByIdAndDelete(courseId);
+    await Courses.findByIdAndUpdate(courseId, { status: "removed" });
 
     return res.status(200).json({ message: "Course deleted successfully" });
   } catch (error) {
@@ -171,4 +170,5 @@ module.exports = {
   getIndividualCourse,
   postEditCourse,
   postDeleteCourse,
+  postPublishCourse,
 };

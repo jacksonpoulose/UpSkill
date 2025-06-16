@@ -5,8 +5,7 @@ const User = require("../../models/userModel");
 
 const mentorRegistration = async (req, res) => {
   try {
-    console.log("🔁 Incoming mentor registration request...");
-
+    
     const {
       expertiseAreas,
       bio,
@@ -157,7 +156,8 @@ const postPayment = async (req, res) => {
       error: err.message 
 
    
+  });
   }
 };
 
-module.exports = { mentorRegistration };
+module.exports = { mentorRegistration, studentRegistration, getPayment, postPayment };

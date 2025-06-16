@@ -1,3 +1,5 @@
+const courses = require('../../models/course/course')
+
 
 const home = (req, res) => {
     res.json({ message: "Welcome to the Home Page" });
@@ -14,7 +16,12 @@ const home = (req, res) => {
   };
 
   const courseCards = (req, res) => {
-    res.json({ message: "Course Cards will be displayed here" });
+    courses.find({}).then((courses) => {
+      console.log(courses);
+        res.json({ message: "Course Cards will be displayed here",courses });
+    }).catch((err) => {
+        res.status(500).json({ message: "Error fetching courses", error: err.message });
+    });
   };
 
   
