@@ -21,7 +21,7 @@ const { getNotifications, postNotification } = require("../../controllers/admin/
 const { getMentors, getIndividualMentor } = require("../../controllers/admin/mentorController");
 const { getStudents, getIndividualStudent } = require("../../controllers/admin/studentController");
 const { verifyToken, checkRole } = require("../../middlewares/authMiddleware");
-const { get } = require("mongoose");
+const { getUsers, getIndividualUser } = require("../../controllers/admin/userController");
 
 router.use(verifyToken, checkRole(["admin"]));
 
@@ -29,6 +29,8 @@ router.get("/dashboard", getDashboard);
 router.get("/courses", getCourses);
 router.get("/students", getStudents);
 router.get("/mentors", getMentors);
+router.get("/users", getUsers);
+router.get("/users/:id", getIndividualUser);
 
 router.get("/category", getCategories);
 router.post("/category/add", postAddCategory);
