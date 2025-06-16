@@ -11,9 +11,10 @@ const courseSchema = new mongoose.Schema({
   endDate: { type: Date },
   courseFee: { type: Number, required: true }, // e.g., 4999
   courseImage: { type: String }, 
-  isPublished: {
-    type: Boolean,
-    default: false,
+  status: {
+    type: String,
+    enum: ["draft", "published", "removed"],
+    default: "draft",
   },
 }, {
   timestamps: true

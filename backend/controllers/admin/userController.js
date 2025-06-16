@@ -21,4 +21,20 @@ const getIndividualUser = async (req, res) => {
   }
 };
 
-module.exports = { getUsers, getIndividualUser };  
+const postBlockUnblockUser = async (req, res) => {
+  try {
+    const { _id } = req.params;
+    const { isActive } = req.body;
+    if(isActive === true){
+      const user = await Users.findByIdAndUpdate(_id, { isActive: false });
+      res.status(200).json({ message: "User blocked", user });
+    }else{
+      const user = await Users.findByIdAndUpdate(_id, { isActive: true });
+      res.status(200).json({ message: "User unblocked", user });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { getUsers, getIndividualUser, postBlockUnblockUser };  
