@@ -54,7 +54,7 @@ const UserDetails = () => {
 
   useEffect(() => {
     fetchUserDetails();
-  }, [userId]);
+  }, [id]);
 
   const fetchUserDetails = async () => {
     setLoading(true);
@@ -73,7 +73,7 @@ const UserDetails = () => {
 
   const handleBlockUnblock = async () => {
     try {
-      await axiosInstance.put(`/admin/users/${userId}/block`, {
+      await axiosInstance.put(`/admin/users/${id}/block`, {
         isActive: !user.isActive,
       });
       

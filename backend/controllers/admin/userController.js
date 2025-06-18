@@ -24,16 +24,19 @@ const postBlockUnblockUser = async (req, res) => {
   try {
     const { id } = req.params;
     const { isActive } = req.body;
-    if (isActive === true) {
-      const user = await Users.findByIdAndUpdate(id, { isActive: false });
-      res.status(200).json({ message: "User blocked", user });
-    } else {
-      const user = await Users.findByIdAndUpdate(id, { isActive: true });
-      res.status(200).json({ message: "User unblocked", user });
-    }
+
+    const user = await Users.findByIdAndUpdate(
+      id,
+      { isActive },
+      { new: true } // To return the updated user
+    );
+
+    const message = isActive ? "User unblocked" : "User blocked";
+    res.status(200).json({ message, user });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 module.exports = { getUsers, getIndividualUser, postBlockUnblockUser };

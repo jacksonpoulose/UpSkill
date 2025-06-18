@@ -130,12 +130,12 @@ const Users = () => {
 
   const handleBlockUnblock = async () => {
     if (!selectedUser) return;
-
+  
     try {
       const response = await axiosInstance.put(`/admin/users/${selectedUser._id}/block`, {
         isActive: !selectedUser.isActive,
       });
-
+  
       // Update both allUsers and filteredUsers
       const updateUser = (users) =>
         users.map((user) =>
@@ -143,10 +143,10 @@ const Users = () => {
             ? { ...user, isActive: !selectedUser.isActive } 
             : user
         );
-
+  
       setAllUsers(updateUser);
       setFilteredUsers(updateUser);
-
+  
       setShowConfirmModal(false);
       setSelectedUser(null);
       setActionType("");
@@ -154,7 +154,7 @@ const Users = () => {
       console.error("Error blocking/unblocking user:", error);
     }
   };
-
+  
   const openConfirmModal = (user, action) => {
     setSelectedUser(user);
     setActionType(action);
