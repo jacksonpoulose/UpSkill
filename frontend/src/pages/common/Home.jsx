@@ -9,6 +9,7 @@ const Home = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
+  const [role, setRole] = useState('');
 
   const categories = [
     {
@@ -60,6 +61,7 @@ const Home = () => {
     if (user && user.name) {
       setIsLoggedIn(true);
       setUsername(user.name);
+      setRole(user.role || ''); // safely set role
     }
   }, []);
 
@@ -73,11 +75,13 @@ const Home = () => {
       {/* Navbar */}
       <Navbar 
         isLoggedIn={isLoggedIn} 
-        username={username} 
+        username={username}
+        role={role}
         onLogout={() => {
           localStorage.removeItem('user');
           setIsLoggedIn(false);
           setUsername('');
+          setRole('');
         }}
       />
 

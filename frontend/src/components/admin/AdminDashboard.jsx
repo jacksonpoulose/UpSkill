@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { logout } from "../redux/userSlice"; // Import logout action
+import { useSelector } from 'react-redux';
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
@@ -9,6 +10,7 @@ const AdminDashboard = () => {
   const [users, setUsers] = useState([]); // State to hold the list of users
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
 
   // Fetch users from API on page load
   useEffect(() => {

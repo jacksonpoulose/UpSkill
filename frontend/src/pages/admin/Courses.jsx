@@ -11,6 +11,7 @@ import {
   Edit2,
   Trash2,
   BookOpen,
+  Eye,
 } from "lucide-react";
 import axiosInstance from "../../api/axiosInstance";
 import ConfirmationModal from "../../components/common/ConfirmationModal";
@@ -236,13 +237,20 @@ const Courses = () => {
                           >
                             <Trash2 size={18} />
                           </button>
+                          <Link
+                            to={`/admin/courses/view/${course._id}`}
+                            className="text-gray-600 hover:text-green-600 transition-colors p-1 rounded-full hover:bg-gray-100"
+                            aria-label="View course"
+                          >
+                            <Eye size={18} />
+                          </Link>
 
-                          <button
+                          {/* <button
                             className="text-gray-600 hover:text-gray-900 transition-colors p-1 rounded-full hover:bg-gray-100"
                             aria-label="More options"
                           >
                             <MoreVertical size={18} />
-                          </button>
+                          </button> */}
                         </div>
                       </td>
                     </tr>
@@ -287,17 +295,16 @@ const Courses = () => {
         }
       />
       <ConfirmationModal
-  isOpen={isModalOpen}
-  title="Delete Course"
-  message="Are you sure you want to delete the following course?"
-  itemName={selectedCourseTitle}
-  confirmLabel="Delete"
-  cancelLabel="Cancel"
-  onConfirm={confirmDeleteCourse}
-  onCancel={() => setIsModalOpen(false)}
-  variant="danger"
-/>
-
+        isOpen={isModalOpen}
+        title="Delete Course"
+        message="Are you sure you want to delete the following course?"
+        itemName={selectedCourseTitle}
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        onConfirm={confirmDeleteCourse}
+        onCancel={() => setIsModalOpen(false)}
+        variant="danger"
+      />
     </div>
   );
 };

@@ -1,29 +1,43 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, LayoutDashboard, User, Info, Menu, X,BookOpen } from 'lucide-react';
+import { Home, LayoutDashboard, User, Info, Menu, X, BookOpen } from 'lucide-react';
 import Button from './Button';
 import Logo from './Logo';
 
-const Navbar = ({ isLoggedIn, username, onLogout }) => {
+const Navbar = ({ isLoggedIn, username, role, onLogout }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
 
-  const isActive = (path) => {
-    return location.pathname === path;
-  };
+  const isActive = (path) => location.pathname === path;
+  const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
 
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
-  };
-
-  const navItems = [
+  // Always-visible public nav items
+  const publicItems = [
     { path: '/', label: 'Home', icon: <Home size={18} /> },
     { path: '/courses', label: 'Our Courses', icon: <BookOpen size={18} /> },
-    { path: '/studentdashboard', label: 'Student Dashboard', icon: <LayoutDashboard size={18} /> },
-    { path: '/profile', label: 'Profile', icon: <User size={18} /> },
     { path: '/about', label: 'About Us', icon: <Info size={18} /> },
-
   ];
+
+  // Items for each role
+  const guestItems = [
+    ...publicItems,
+    { path: '/profile', label: 'Profile', icon: <User size={18} /> },
+  ];
+
+  const studentItems = [
+    ...publicItems,
+    { path: '/studentdashboard', label: 'Student Dashboard', icon: <LayoutDashboard size={18} /> },
+  ];
+
+  // Final nav item array based on login state and role
+  let navItemsToShow = publicItems;
+  if (isLoggedIn) {
+    if (role === 'guest') {
+      navItemsToShow = guestItems;
+    } else if (role === 'student') {
+      navItemsToShow = studentItems;
+    }
+  }
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -36,7 +50,7 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
-            {navItems.map((item) => (
+            {navItemsToShow.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
@@ -52,10 +66,10 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
             ))}
           </nav>
 
-          {/* Auth Buttons - Desktop */}
+          {/* Desktop Auth Buttons */}
           <div className="hidden md:flex items-center space-x-4">
             {isLoggedIn ? (
-              <div className="flex items-center space-x-4">
+              <>
                 <span className="text-gray-700 font-medium">Welcome, {username} 👋</span>
                 <Button
                   variant="outline"
@@ -65,7 +79,18 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
                 >
                   Logout
                 </Button>
-              </div>
+                {role === 'guest' && (
+                  <Button
+                    variant="red"
+                    size="md"
+                    className="bg-red-600 text-white hover:bg-red-700"
+                    as={Link}
+                    to="/mentor/register"
+                  >
+                    Become a Mentor
+                  </Button>
+                )}
+              </>
             ) : (
               <>
                 <Button
@@ -88,19 +113,9 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
                 </Button>
               </>
             )}
-
-            <Button
-              variant="red"
-              size="md"
-              className="bg-red-600 text-white hover:bg-red-700"
-              as={Link}
-              to="/mentor/register"
-            >
-              Become a Mentor
-            </Button>
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile Menu Toggle */}
           <div className="md:hidden">
             <button
               onClick={toggleMobileMenu}
@@ -115,7 +130,7 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
           <div className="md:hidden py-4 space-y-3 mt-4 animate-fade-in-down">
-            {navItems.map((item) => (
+            {navItemsToShow.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
@@ -133,7 +148,7 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
 
             <div className="pt-4 border-t border-gray-200 mt-4">
               {isLoggedIn ? (
-                <div className="space-y-3">
+                <>
                   <p className="text-gray-700 font-medium">Welcome, {username} 👋</p>
                   <Button
                     variant="outline"
@@ -146,9 +161,21 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
                   >
                     Logout
                   </Button>
-                </div>
+                  {role === 'guest' && (
+                    <Button
+                      variant="red"
+                      size="md"
+                      className="w-full bg-red-600 text-white hover:bg-red-700 mt-3"
+                      as={Link}
+                      to="/mentor/register"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Become a Mentor
+                    </Button>
+                  )}
+                </>
               ) : (
-                <div className="space-y-3">
+                <>
                   <Button
                     variant="text"
                     size="md"
@@ -169,18 +196,8 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
                   >
                     Sign Up
                   </Button>
-                </div>
+                </>
               )}
-              <Button
-                variant="red"
-                size="md"
-                className="w-full bg-red-600 text-white hover:bg-red-700 mt-3"
-                as={Link}
-                to="/become-mentor"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Become a Mentor
-              </Button>
             </div>
           </div>
         )}
