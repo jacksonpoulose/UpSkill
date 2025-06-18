@@ -1,7 +1,6 @@
 const Users = require("../../models/userModel");
 const Courses = require("../../models/course/course");
 
-
 const getUsers = async (req, res) => {
   try {
     const users = await Users.find();
@@ -13,9 +12,9 @@ const getUsers = async (req, res) => {
 
 const getIndividualUser = async (req, res) => {
   try {
-    const { _id } = req.params;
-    const user = await Users.findById(_id);
-    res.status(200).json({ user });
+    const { id } = req.params;
+    const user = await Users.findById(id);
+    res.status(200).json({ message: "User fetched successfully", user });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -23,13 +22,13 @@ const getIndividualUser = async (req, res) => {
 
 const postBlockUnblockUser = async (req, res) => {
   try {
-    const { _id } = req.params;
+    const { id } = req.params;
     const { isActive } = req.body;
-    if(isActive === true){
-      const user = await Users.findByIdAndUpdate(_id, { isActive: false });
+    if (isActive === true) {
+      const user = await Users.findByIdAndUpdate(id, { isActive: false });
       res.status(200).json({ message: "User blocked", user });
-    }else{
-      const user = await Users.findByIdAndUpdate(_id, { isActive: true });
+    } else {
+      const user = await Users.findByIdAndUpdate(id, { isActive: true });
       res.status(200).json({ message: "User unblocked", user });
     }
   } catch (error) {
@@ -37,4 +36,4 @@ const postBlockUnblockUser = async (req, res) => {
   }
 };
 
-module.exports = { getUsers, getIndividualUser, postBlockUnblockUser };  
+module.exports = { getUsers, getIndividualUser, postBlockUnblockUser };
