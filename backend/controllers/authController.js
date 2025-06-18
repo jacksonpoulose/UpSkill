@@ -57,6 +57,9 @@ const loginController = async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: "invalid credentials" });
 
+    if (!user.isActive) return res.status(400).json({message: "Your account is blocked, please contact admin"});
+    
+
     const isMatch = await comparePassword(password, user.password);
     if (!isMatch) return res.status(400).json({ message: "invalid credentials" });
 
