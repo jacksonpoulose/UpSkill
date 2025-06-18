@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import Sidebar from '../../components/admin/Sidebar'; // Adjust path if needed
-
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import Sidebar from "../../components/admin/Sidebar"; // Adjust path if needed
+import { useSelector } from "react-redux";
 import {
   LayoutDashboard,
   BookOpen,
@@ -14,9 +14,9 @@ import {
   BarChart3,
   TrendingUp,
   Users2,
-  GraduationCap
-} from 'lucide-react';
-import { Line, Bar } from 'react-chartjs-2';
+  GraduationCap,
+} from "lucide-react";
+import { Line, Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -27,7 +27,7 @@ import {
   Title,
   Tooltip,
   Legend,
-} from 'chart.js';
+} from "chart.js";
 
 ChartJS.register(
   CategoryScale,
@@ -41,66 +41,82 @@ ChartJS.register(
 );
 
 const AdminDashboard = () => {
-  const [currentSection, setCurrentSection] = useState('dashboard');
+  const [currentSection, setCurrentSection] = useState("dashboard");
+  const user = useSelector((state) => state.user.user); // Get the user from Redux store
 
   const sidebarItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard /> },
-    { id: 'courses', label: 'Courses', icon: <BookOpen /> },
-    { id: 'students', label: 'Students', icon: <Users /> },
-    { id: 'mentors', label: 'Mentors', icon: <UserCog /> },
-    { id: 'settings', label: 'Settings', icon: <Settings /> },
+    { id: "dashboard", label: "Dashboard", icon: <LayoutDashboard /> },
+    { id: "courses", label: "Courses", icon: <BookOpen /> },
+    { id: "students", label: "Students", icon: <Users /> },
+    { id: "mentors", label: "Mentors", icon: <UserCog /> },
+    { id: "settings", label: "Settings", icon: <Settings /> },
   ];
 
   const enrollmentData = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
     datasets: [
       {
-        label: 'Student Enrollments',
+        label: "Student Enrollments",
         data: [65, 78, 90, 85, 99, 105],
-        borderColor: 'rgb(59, 130, 246)',
-        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        borderColor: "rgb(59, 130, 246)",
+        backgroundColor: "rgba(59, 130, 246, 0.1)",
         fill: true,
       },
     ],
   };
 
   const courseCompletionData = {
-    labels: ['Web Dev', 'Data Science', 'AI/ML', 'Mobile Dev'],
+    labels: ["Web Dev", "Data Science", "AI/ML", "Mobile Dev"],
     datasets: [
       {
-        label: 'Completion Rate (%)',
+        label: "Completion Rate (%)",
         data: [75, 68, 82, 71],
         backgroundColor: [
-          'rgba(59, 130, 246, 0.8)',
-          'rgba(99, 102, 241, 0.8)',
-          'rgba(139, 92, 246, 0.8)',
-          'rgba(168, 85, 247, 0.8)',
+          "rgba(59, 130, 246, 0.8)",
+          "rgba(99, 102, 241, 0.8)",
+          "rgba(139, 92, 246, 0.8)",
+          "rgba(168, 85, 247, 0.8)",
         ],
       },
     ],
   };
 
   const stats = [
-    { label: 'Total Students', value: '2,845', icon: <Users2 />, trend: '+12%' },
-    { label: 'Active Courses', value: '48', icon: <BookOpen />, trend: '+5%' },
-    { label: 'Total Revenue', value: '$124,592', icon: <BarChart3 />, trend: '+18%' },
-    { label: 'Course Completion', value: '74%', icon: <TrendingUp />, trend: '+7%' },
+    {
+      label: "Total Students",
+      value: "2,845",
+      icon: <Users2 />,
+      trend: "+12%",
+    },
+    { label: "Active Courses", value: "48", icon: <BookOpen />, trend: "+5%" },
+    {
+      label: "Total Revenue",
+      value: "$124,592",
+      icon: <BarChart3 />,
+      trend: "+18%",
+    },
+    {
+      label: "Course Completion",
+      value: "74%",
+      icon: <TrendingUp />,
+      trend: "+7%",
+    },
   ];
 
   const recentCourses = [
-    { name: 'Advanced React Development', students: 156, rating: 4.8 },
-    { name: 'Data Science Fundamentals', students: 142, rating: 4.7 },
-    { name: 'Machine Learning Basics', students: 128, rating: 4.9 },
-    { name: 'Python for Beginners', students: 198, rating: 4.6 },
+    { name: "Advanced React Development", students: 156, rating: 4.8 },
+    { name: "Data Science Fundamentals", students: 142, rating: 4.7 },
+    { name: "Machine Learning Basics", students: 128, rating: 4.9 },
+    { name: "Python for Beginners", students: 198, rating: 4.6 },
   ];
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-<Sidebar />
+      <Sidebar />
 
       {/* Main Content */}
       <div className="ml-64 flex-1 overflow-hidden">
-      {/* Header */}
+        {/* Header */}
         <header className="bg-white shadow-sm">
           <div className="flex items-center justify-between px-8 py-4">
             <div className="flex items-center bg-gray-100 rounded-lg px-4 py-2 w-96">
@@ -124,7 +140,9 @@ const AdminDashboard = () => {
                   alt="Admin"
                   className="h-8 w-8 rounded-full object-cover"
                 />
-                <span className="text-gray-700">Admin User</span>
+                <span className="text-gray-700">
+                  {user?.role === "admin" ? user.name : "User"}
+                </span>
                 <ChevronDown className="h-4 w-4 text-gray-500" />
               </button>
             </div>
@@ -138,11 +156,17 @@ const AdminDashboard = () => {
               <div key={index} className="bg-white rounded-lg shadow p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="p-2 bg-blue-100 rounded-lg">
-                    {React.cloneElement(stat.icon, { className: 'h-6 w-6 text-blue-600' })}
+                    {React.cloneElement(stat.icon, {
+                      className: "h-6 w-6 text-blue-600",
+                    })}
                   </div>
-                  <span className="text-green-500 text-sm font-medium">{stat.trend}</span>
+                  <span className="text-green-500 text-sm font-medium">
+                    {stat.trend}
+                  </span>
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900">{stat.value}</h3>
+                <h3 className="text-2xl font-bold text-gray-900">
+                  {stat.value}
+                </h3>
                 <p className="text-gray-600">{stat.label}</p>
               </div>
             ))}
@@ -150,11 +174,15 @@ const AdminDashboard = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold mb-4">Student Enrollment Trend</h3>
+              <h3 className="text-lg font-semibold mb-4">
+                Student Enrollment Trend
+              </h3>
               <Line data={enrollmentData} options={{ responsive: true }} />
             </div>
             <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold mb-4">Course Completion Rates</h3>
+              <h3 className="text-lg font-semibold mb-4">
+                Course Completion Rates
+              </h3>
               <Bar data={courseCompletionData} options={{ responsive: true }} />
             </div>
           </div>
@@ -179,7 +207,9 @@ const AdminDashboard = () => {
                         <td className="py-3 px-4">{course.students}</td>
                         <td className="py-3 px-4">⭐ {course.rating}</td>
                         <td className="py-3 px-4">
-                          <button className="text-blue-600 hover:text-blue-800">View Details</button>
+                          <button className="text-blue-600 hover:text-blue-800">
+                            View Details
+                          </button>
                         </td>
                       </tr>
                     ))}
