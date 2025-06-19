@@ -1,6 +1,9 @@
 const StudentProfile = require("../../models/studentProfile");
 const User = require("../../models/userModel");
 const Notification = require("../../models/notificationModel");
+const Stripe = require("stripe");
+
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 const studentRegistration = async (req, res) => {
   try {
@@ -90,18 +93,41 @@ const getPayment = async (req, res) => {
     res.status(500).json({ message: "Server error in getPayment" });
   }
 };
+
 const postPayment = async (req, res) => {
   const { amount } = req.body;
+  const userId = req.user?.id;
+  const userRole = req.user?.role;
+  const email = req.user?.email;
+
+  if (!email) {
+    return res.status(400).json({ message: "Email missing from request" });
+  }
+
+  if (userRole !== "student") {
+    return res.status(403).json({ message: "Access denied. Only students can make payments." });
+  }
+  if (!userId) {
+    return res.status(400).json({ message: "User ID missing from request" });
+  }
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       amount,
       currency: "usd",
+      description: "Student Registration Fee",
+      metadata: {
+        userId,
+        userRole,
+        email,
+      },
+      automatic_payment_methods: { enabled: true },
     });
-  } catch (err) {
-    res.status(500).json({
-      message: "Server error in mentor registration",
-      error: err.message,
+
+    res.send({
+      clientSecret: paymentIntent.client_secret,
     });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
 };
 
