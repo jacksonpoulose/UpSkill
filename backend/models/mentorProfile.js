@@ -13,9 +13,13 @@ const mentorProfileSchema = new mongoose.Schema({
     preferredSlots: [String]
   },
   certifications: [String],
-  rating: { type: Number, default: 0 }
+  currentRole: String,
+  company: String,
+  languagesSpoken: [String],
+  whyMentor: String,
+  rating: { type: Number, default: 0 },
 }, {
-  timestamps: true
+  timestamps: true,
 });
 
 module.exports = mongoose.model('MentorProfile', mentorProfileSchema);
