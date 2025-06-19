@@ -15,6 +15,6 @@ router.use(verifyToken, checkRole(["guest"]));
 router.post("/mentorregistration", mentorRegistration);
 router.post("/studentregistration", studentRegistration);
 router.get("/payment", getPayment);
-router.post("/payment", postPayment);
+router.post("/create-payment-intent", postPayment);
 
 module.exports = router;
