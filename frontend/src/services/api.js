@@ -1,39 +1,15 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 
-// Create an axios instance
-const api = axios.create({
-  baseURL: 'http://localhost:3000/api', // Or your deployed backend URL
-  headers: {
-    'Content-Type': 'application/json',
+export const userAPI = {
+  getCurrentUser: async () => {
+    const response = await axiosInstance.get('/user/me');
+    return response.data;
   },
-});
 
-// Add a request interceptor for JWT
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
+  submitMentorRegistration: async (data) => {
+    const response = await axiosInstance.post('/user/mentorregistration', data);
+    return response.data;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+};
 
-// Add a response interceptor for handling errors
-api.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  (error) => {
-    if (error.response && error.response.status === 401) {
-      localStorage.removeItem('token');
-      window.location.href = '/login';
-    }
-    return Promise.reject(error);
-  }
-);
-
-export default api;
+export default axiosInstance;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+
 import Sidebar from "../../components/admin/Sidebar";
 import Button from "../../components/common/Button";
 import StudentStatusBadge from "../../components/admin/StudentStatusBadge";
@@ -13,7 +13,7 @@ import {
   BookOpen,
 } from "lucide-react";
 import ProgressBar from "../../components/common/ProgressBar";
-import axiosInstance from "../../api/axiosInstance";
+import axiosInstance from "../../services/axiosInstance";
 
 const Students = () => {
   const [students, setStudents] = useState([]);

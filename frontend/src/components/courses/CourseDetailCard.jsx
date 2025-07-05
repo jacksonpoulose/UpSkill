@@ -4,14 +4,9 @@ import { Course } from '../../types';
 import Card from '../common/Card';
 import Button from '../common/Button';
 
-interface CourseDetailCardProps {
-  course: Course;
-  isEnrolled?: boolean;
-  onEnroll?: () => void;
-  isEnrolling?: boolean;
-}
 
-const CourseDetailCard: React.FC<CourseDetailCardProps> = ({
+
+const CourseDetailCard=({
   course,
   isEnrolled = false,
   onEnroll,

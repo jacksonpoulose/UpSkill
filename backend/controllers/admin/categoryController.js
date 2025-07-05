@@ -41,24 +41,32 @@ const postEditCategory = async (req, res) => {
   }
 };
 
-const postDeleteCategory = async (req, res) => {
+const toggleCategoryStatus = async (req, res) => {
   try {
     const categoryId = req.params.id;
 
-    const deletedCategory = await Category.findByIdAndUpdate(categoryId, { isActive: false });
-    if (!deletedCategory) {
+    const category = await Category.findById(categoryId);
+    if (!category) {
       return res.status(404).json({ message: "Category not found" });
     }
 
-    res.status(200).json({ message: "Category deleted successfully" });
+    category.isActive = !category.isActive;
+    await category.save();
+
+    res.status(200).json({
+      message: `Category ${category.isActive ? "listed" : "unlisted"} successfully`,
+      category,
+    });
   } catch (err) {
-    res.status(500).json({ message: "Error deleting category" });
+    console.error("Error toggling category status:", err);
+    res.status(500).json({ message: "Error updating category status" });
   }
 };
+
 
 module.exports = {
   getCategories,
   postAddCategory,
   postEditCategory,
-  postDeleteCategory,
+  toggleCategoryStatus,
 };

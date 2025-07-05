@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import Sidebar from "../../components/admin/Sidebar";
 import Button from "../../components/common/Button";
 import AddCategoryModal from "../../components/modal/AddCategoryModal";
 import EditCategoryModal from "../../components/modal/EditCategoryModal";
 import Notification from "../../components/common/Notification";
-import { Plus, Search, Edit2, Trash2 } from "lucide-react";
-import axiosInstance from "../../api/axiosInstance";
-import ConfirmationModal from "../../components/common/ConfirmationModal";
+import { Plus, Search, Edit2 } from "lucide-react";
+import axiosInstance from "../../services/axiosInstance";
 
 const CourseCategory = () => {
   const [categories, setCategories] = useState([]);
@@ -22,18 +20,14 @@ const CourseCategory = () => {
     isVisible: false,
   });
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
-  const [selectedCategoryName, setSelectedCategoryName] = useState("");
   useEffect(() => {
     fetchCategories();
   }, []);
 
-
   const fetchCategories = async () => {
     try {
       setLoading(true);
-      const res = await axiosInstance.get('/admin/category');
+      const res = await axiosInstance.get("/admin/category");
       setCategories(res.data.categories || []);
     } catch (error) {
       console.error("Failed to fetch categories:", error);
@@ -59,7 +53,9 @@ const CourseCategory = () => {
 
   const handleCategoryUpdated = (updatedCategory) => {
     setCategories((prev) =>
-      prev.map((cat) => (cat._id === updatedCategory._id ? updatedCategory : cat))
+      prev.map((cat) =>
+        cat._id === updatedCategory._id ? updatedCategory : cat
+      )
     );
     showNotification("success", "Category updated successfully");
   };
@@ -72,32 +68,21 @@ const CourseCategory = () => {
     });
   };
 
-  const openDeleteModal = (id, name) => {
-    setSelectedCategoryId(id);
-    setSelectedCategoryName(name);
-    setIsModalOpen(true);
-  };
-
-  const confirmDeleteCategory = async () => {
+  const toggleCategoryStatus = async (categoryId) => {
     try {
-      const token = localStorage.getItem("token");
-      await axiosInstance.delete(`/admin/category/${selectedCategoryId}`);
-        headers: { Authorization: `Bearer ${token}` }
-      
+      const res = await axiosInstance.patch(`/admin/category/${categoryId}/toggle`);
+      const updated = res.data.category;
 
       setCategories((prev) =>
-        prev.filter((cat) => cat._id !== selectedCategoryId)
+        prev.map((cat) => (cat._id === updated._id ? updated : cat))
       );
-      showNotification("success", "Category deleted successfully");
+
+      showNotification("success", `Category ${updated.isActive ? "listed" : "unlisted"} successfully`);
     } catch (error) {
-      console.error("Failed to delete category:", error);
-      showNotification("error", "Failed to delete category");
-    } finally {
-      setIsModalOpen(false);
+      console.error("Failed to toggle category status:", error);
+      showNotification("error", "Failed to update category status");
     }
   };
-
- 
 
   const filteredCategories = categories.filter((cat) =>
     cat.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -113,7 +98,11 @@ const CourseCategory = () => {
             <h1 className="text-2xl font-bold text-gray-900">Course Categories</h1>
             <p className="text-gray-600">Manage course categories like Web, Mobile etc.</p>
           </div>
-          <Button variant="blue" className="flex items-center space-x-2" onClick={handleAddCategory}>
+          <Button
+            variant="blue"
+            className="flex items-center space-x-2"
+            onClick={handleAddCategory}
+          >
             <Plus size={20} />
             <span>Add Category</span>
           </Button>
@@ -145,22 +134,32 @@ const CourseCategory = () => {
               <table className="w-full">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Name
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Description
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Actions
-                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredCategories.map((cat) => (
                     <tr key={cat._id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{cat.name}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{cat.description || "N/A"}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {cat.name}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {cat.description || "N/A"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span
+                          className={`inline-block px-2 py-1 text-xs rounded font-semibold ${
+                            cat.isActive
+                              ? "bg-green-100 text-green-700"
+                              : "bg-red-100 text-red-700"
+                          }`}
+                        >
+                          {cat.isActive ? "Listed" : "Unlisted"}
+                        </span>
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <div className="flex items-center space-x-3">
                           <button
@@ -170,15 +169,13 @@ const CourseCategory = () => {
                           >
                             <Edit2 size={18} />
                           </button>
-                          <button
-                            onClick={() =>
-                              openDeleteModal(cat._id, cat.name)
-                            }
-                            className="text-gray-600 hover:text-red-600 transition-colors p-1 rounded-full hover:bg-gray-100"
-                            aria-label={`Delete ${cat.name}`}
+                          <Button
+                            variant={cat.isActive ? "red" : "green"}
+                            size="sm"
+                            onClick={() => toggleCategoryStatus(cat._id)}
                           >
-                            <Trash2 size={18} />
-                          </button>
+                            {cat.isActive ? "Unlist" : "List"}
+                          </Button>
                         </div>
                       </td>
                     </tr>
@@ -198,7 +195,11 @@ const CourseCategory = () => {
                   : "There are no categories added yet. Create your first category!"}
               </p>
               {!searchQuery && (
-                <Button variant="blue" className="inline-flex items-center space-x-2" onClick={handleAddCategory}>
+                <Button
+                  variant="blue"
+                  className="inline-flex items-center space-x-2"
+                  onClick={handleAddCategory}
+                >
                   <Plus size={18} />
                   <span>Add Your First Category</span>
                 </Button>
@@ -230,21 +231,11 @@ const CourseCategory = () => {
         type={notification.type}
         message={notification.message}
         isVisible={notification.isVisible}
-        onClose={() => setNotification((prev) => ({ ...prev, isVisible: false }))}
+        onClose={() =>
+          setNotification((prev) => ({ ...prev, isVisible: false }))
+        }
       />
-      <ConfirmationModal
-  isOpen={isModalOpen}
-  title="Delete Category"
-  message="Are you sure you want to delete the following category?"
-  itemName={selectedCategoryName}
-  confirmLabel="Delete"
-  cancelLabel="Cancel"
-  onConfirm={confirmDeleteCategory}
-  onCancel={() => setIsModalOpen(false)}
-  variant="danger"
-/>
     </div>
-    
   );
 };
 
