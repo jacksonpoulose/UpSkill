@@ -146,29 +146,34 @@ const postEditCourse = async (req, res) => {
 };
 
 
-const postDeleteCourse = async (req, res) => {
+const updateCourseStatus = async (req, res) => {
   try {
-    const courseId = req.params.id;
+    const { id } = req.params;
+    const { status } = req.body;
 
-    const course = await Courses.findById(courseId);
+    const validStatuses = ["draft", "published", "removed"];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ message: "Invalid status" });
+    }
+
+    const course = await Courses.findByIdAndUpdate(id, { status }, { new: true });
     if (!course) {
       return res.status(404).json({ message: "Course not found" });
     }
 
-    await Courses.findByIdAndUpdate(courseId, { status: "removed" });
-
-    return res.status(200).json({ message: "Course deleted successfully" });
+    res.status(200).json({ message: `Course status updated to ${status}`, course });
   } catch (error) {
-    console.error("Error deleting course:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    console.error("Error updating course status:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 module.exports = {
   getCourses,
   postAddCourse,
   getIndividualCourse,
   postEditCourse,
-  postDeleteCourse,
+  updateCourseStatus,
   postPublishCourse,
 };

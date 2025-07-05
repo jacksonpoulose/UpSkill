@@ -10,7 +10,7 @@ import ImageUploadSection from "../../components/admin/course/ImageUploadSection
 import FormActions from "../../components/admin/course/FormAction";
 import Notification from "../../components/common/Notification";
 import PageHeader from "../../components/admin/PageHeader";
-import axiosInstance from "../../api/axiosInstance";
+import axiosInstance from "../../services/axiosInstance";
 
 const AddCourse = () => {
   const navigate = useNavigate();

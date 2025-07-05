@@ -20,6 +20,7 @@ import ResetPassword from "./pages/common/ResetPassword";
 import Users from "./pages/admin/Users";
 import CourseDetails from "./pages/admin/CourseDetails";
 import UserDeatils from "./pages/admin/UserDetails";
+import SyllabusPlanner from "./pages/admin/SyllabusPlanner";
 const App = () => {
   return (
     <Routes>
@@ -45,6 +46,7 @@ const App = () => {
       <Route path="/admin/courses/view/:id" element={<CourseDetails/>}/>
       <Route path="/admin/users" element={<Users/>}/>
       <Route path="/admin/users/:id" element={<UserDeatils />} />
+      <Route path="/admin/syllabus" element={<SyllabusPlanner />} />
 
     </Routes>
   );
