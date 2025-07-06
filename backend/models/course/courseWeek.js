@@ -19,4 +19,10 @@ const courseWeekSchema = new mongoose.Schema({
   timestamps: true
 });
 
-module.exports = mongoose.model('CourseWeek', courseWeekSchema);
+
+const CourseWeek = mongoose.model('CourseWeek', courseWeekSchema);
+const Task = mongoose.model('Task', taskSchema);
+module.exports = {
+  CourseWeek,
+  Task
+};

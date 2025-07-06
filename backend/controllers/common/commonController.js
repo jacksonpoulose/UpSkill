@@ -16,8 +16,8 @@ const home = (req, res) => {
   };
 
   const courseCards = (req, res) => {
-    courses.find({}).then((courses) => {
-      console.log(courses);
+    courses.find({status:"published"}).then((courses) => {
+      
         res.json({ message: "Course Cards will be displayed here",courses });
     }).catch((err) => {
         res.status(500).json({ message: "Error fetching courses", error: err.message });

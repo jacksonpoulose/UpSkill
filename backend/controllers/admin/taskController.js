@@ -1,18 +1,51 @@
-const Course = require('../../models/Course');
+const Course = require('../../models/course/course');
+const {CourseWeek,Task} = require('../../models/course/courseWeek');
 
-
-const postAddTask = (req,res)=>{
+const getTask = async (req,res)=>{
+    
     try{
-        const { title, description, courseId } = req.body;
-        const newTask = new Task({ title, description, courseId });
-        newTask.save();
-        res.status(200).json({message:"welcome to add task"})
+        const course = await Course.find({})
+        const task = await Task.find({});
+        const courseweek = await CourseWeek.find({});
+        res.status(200).json({message:"welcome to get task",course,task,courseweek})
     }catch(error){
         console.log(error);
         res.status(404).json({message:"page not found"})
     }
-  
 }
+const createCourseWeekWithTasks = async (req, res) => {
+    try {
+      const {
+        course,
+        weekNumber,
+        title,
+        objectives,
+        tasks,
+        reviewNotes
+      } = req.body;
+  
+      const newCourseWeek = new CourseWeek({
+        course,
+        weekNumber,
+        title,
+        objectives,
+        tasks, // embedded tasks array
+        reviewNotes
+      });
+  
+      const savedWeek = await newCourseWeek.save();
+  
+      res.status(201).json({
+        message: 'CourseWeek created with tasks',
+        courseWeek: savedWeek
+      });
+    } catch (err) {
+      console.error('Error creating course week:', err);
+      res.status(500).json({ error: 'Server error' });
+    }
+  };
+
+  
 const postEditTask = (req,res)=>{
     try{
         res.status(200).json({message:"welcome to edit task"})
@@ -22,8 +55,10 @@ const postEditTask = (req,res)=>{
     }
   
 }
-const postDeleteTask = (req,res)=>{
+const postDeleteTask = async (req,res)=>{
     try{
+        const {id} = req.params;
+        const task = await Task.findByIdAndDelete(id);
         res.status(200).json({message:"welcome to delete task"})
     }catch(error){
         console.log(error);
@@ -31,12 +66,22 @@ const postDeleteTask = (req,res)=>{
     }
   
 }
-const getIndividualTask = (req,res)=>{
+const getIndividualTask = async (req,res)=>{
     try{
-        res.status(200).json({message:"welcome to individual task"})
+        const {id} = req.params;
+        const task = await Task.findById(id);
+        res.status(200).json({message:"welcome to individual task",task})
     }catch(error){
         console.log(error);
         res.status(404).json({message:"page not found"})
     }
   
+}
+
+module.exports = {
+    getTask,
+    createCourseWeekWithTasks,
+    postEditTask,
+    postDeleteTask,
+    getIndividualTask
 }

@@ -5,7 +5,7 @@ const StudentProfile = require("../../models/studentProfile");
 const getStudents = async (req, res) => {
   try {
     const students = await Users.find({ role: "student" });
-    console.log("Students", students);
+    
     res
       .status(200)
 
