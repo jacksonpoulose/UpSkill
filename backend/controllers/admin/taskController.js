@@ -1,11 +1,10 @@
 const Course = require('../../models/course/course');
-const {CourseWeek,Task} = require('../../models/course/courseWeek');
+const {CourseWeek} = require('../../models/course/courseWeek');
 
 const getTask = async (req,res)=>{
     
     try{
         const course = await Course.find({})
-        const task = await Task.find({});
         const courseweek = await CourseWeek.find({});
         res.status(200).json({message:"welcome to get task",course,task,courseweek})
     }catch(error){
@@ -20,6 +19,7 @@ const createCourseWeekWithTasks = async (req, res) => {
         weekNumber,
         title,
         objectives,
+        resources, // array of resources
         tasks,
         reviewNotes
       } = req.body;
@@ -29,6 +29,7 @@ const createCourseWeekWithTasks = async (req, res) => {
         weekNumber,
         title,
         objectives,
+        resources, // array of resources
         tasks, // embedded tasks array
         reviewNotes
       });
@@ -46,8 +47,15 @@ const createCourseWeekWithTasks = async (req, res) => {
   };
 
   
-const postEditTask = (req,res)=>{
+const postEditCourseWeek = async (req,res)=>{
+    const {id} = req.params;
+    const {course, weekNumber, title, objectives, resources, tasks, reviewNotes} = req.body;
     try{
+        const updatedCourseWeek = await CourseWeek.findByIdAndUpdate(
+            id,
+            { course, weekNumber, title, objectives, resources, tasks, reviewNotes },
+            { new: true }
+        );
         res.status(200).json({message:"welcome to edit task"})
     }catch(error){
         console.log(error);
@@ -55,10 +63,14 @@ const postEditTask = (req,res)=>{
     }
   
 }
-const postDeleteTask = async (req,res)=>{
+const postDeleteCourseWeek = async (req,res)=>{
     try{
         const {id} = req.params;
-        const task = await Task.findByIdAndDelete(id);
+        const deletedCourseWeek = await CourseWeek.findByIdAndDelete(id);
+        if (!deletedCourseWeek) {
+            return res.status(404).json({ message: 'CourseWeek not found' });
+        }
+        
         res.status(200).json({message:"welcome to delete task"})
     }catch(error){
         console.log(error);
@@ -66,10 +78,13 @@ const postDeleteTask = async (req,res)=>{
     }
   
 }
-const getIndividualTask = async (req,res)=>{
+const getIndividualCourseWeek = async (req,res)=>{
     try{
         const {id} = req.params;
-        const task = await Task.findById(id);
+        const courseWeek = await CourseWeek.findById(id).populate('tasks');
+        if (!courseWeek) {
+            return res.status(404).json({ message: 'CourseWeek not found' });
+        }
         res.status(200).json({message:"welcome to individual task",task})
     }catch(error){
         console.log(error);
@@ -81,7 +96,7 @@ const getIndividualTask = async (req,res)=>{
 module.exports = {
     getTask,
     createCourseWeekWithTasks,
-    postEditTask,
-    postDeleteTask,
-    getIndividualTask
+    postEditCourseWeek,
+    postDeleteCourseWeek,
+    getIndividualCourseWeek
 }
