@@ -29,6 +29,11 @@ const {
   getIndividualUser,
   postBlockUnblockUser,
 } = require("../../controllers/admin/userController");
+const { getTask, 
+  createCourseWeekWithTasks, 
+  postEditCourseWeek,
+  postDeleteCourseWeek,
+  getIndividualCourseWeek } = require("../../controllers/admin/taskController");
 
 router.use(verifyToken, checkRole(["admin"]));
 
@@ -60,5 +65,10 @@ router.get("/notifications", getNotifications);
 router.post("/notifications/add", postNotification);
 // router.get('/unread-count', getUnreadCount);
 
+router.get("/task", getTask);
+router.post("/task/add", createCourseWeekWithTasks);
+router.put("/task/:id/edit", postEditCourseWeek);
+router.delete("/task/:id", postDeleteCourseWeek);
+router.get("/task/:id", getIndividualCourseWeek);
 
 module.exports = router;

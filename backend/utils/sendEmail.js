@@ -1,5 +1,15 @@
 const nodemailer = require('nodemailer');
 
+const crypto = require('crypto');
+
+const generateEmailVerificationToken = () => {
+  return crypto.randomBytes(32).toString('hex');
+};
+
+
+
+
+
 const sendEmail = async ({ to, subject, html }) => {
   try {
     const transporter = nodemailer.createTransport({
@@ -25,4 +35,4 @@ const sendEmail = async ({ to, subject, html }) => {
   }
 };
 
-module.exports = sendEmail;
+module.exports = {sendEmail,generateEmailVerificationToken};
