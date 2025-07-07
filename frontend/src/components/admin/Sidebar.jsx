@@ -9,7 +9,9 @@ import {
   GraduationCap,
   Folder,
   Layers,
-  UserCheck,     // (optional) Mentor
+  UserCheck,
+  LayoutList,
+  Notebook     // (optional) Mentor
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -17,6 +19,7 @@ const Sidebar = () => {
     { label: 'Dashboard', path: '/admin', icon: <LayoutDashboard /> },
     { label: 'Course Categories', path: '/admin/coursecategory', icon: <Folder /> },
     { label: 'Courses', path: '/admin/courses', icon: <BookOpen /> },
+    { label: 'Syllabus Planner', path: '/admin/syllabus', icon: <Notebook /> },
     { label: 'Students', path: '/admin/students', icon: <GraduationCap /> },
     { label: 'Mentors', path: '/admin/mentors', icon: <UserCog /> },
     { label: 'Users', path: '/admin/users', icon: <Users /> },

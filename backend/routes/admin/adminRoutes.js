@@ -9,11 +9,13 @@ const {
   postEditCourse,
   postDeleteCourse,
   postPublishCourse,
+  updateCourseStatus
 } = require("../../controllers/admin/courseController");
 const {
   postAddCategory,
   postEditCategory,
   postDeleteCategory,
+  toggleCategoryStatus,
   getCategories,
 } = require("../../controllers/admin/categoryController");
 
@@ -46,11 +48,12 @@ router.put("/users/:id/block", postBlockUnblockUser);
 router.get("/category", getCategories);
 router.post("/category/add", postAddCategory);
 router.put("/category/:id/edit", postEditCategory);
-router.delete("/category/:id", postDeleteCategory);
+router.patch("/category/:id/toggle", toggleCategoryStatus);
+
 
 router.post("/courses/add", upload.single("courseImage"), postAddCourse);
 router.put("/courses/:id/edit", upload.single("courseImage"), postEditCourse);
-router.delete("/courses/:id", postDeleteCourse);
+router.put("/courses/:id/status", updateCourseStatus);
 router.put("/courses/:id/publish", postPublishCourse);
 
 router.get("/courses/:id", getIndividualCourse);

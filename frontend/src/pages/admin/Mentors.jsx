@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Sidebar from "../../components/admin/Sidebar";
 import Button from "../../components/common/Button";
-import axiosInstance from "../../api/axiosInstance";
+import axiosInstance from "../../services/axiosInstance";
 import {
   Plus,
   Search,

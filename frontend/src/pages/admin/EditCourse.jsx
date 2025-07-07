@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axiosInstance from "../../api/axiosInstance";
+import axiosInstance from "../../services/axiosInstance";
 
 import Sidebar from "../../components/admin/Sidebar";
 import CourseBasicsSection from "../../components/admin/course/CourseBasicsSection";
