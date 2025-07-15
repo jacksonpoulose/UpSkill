@@ -23,7 +23,24 @@ const home = (req, res) => {
         res.status(500).json({ message: "Error fetching courses", error: err.message });
     });
   };
-
+  const getCourseById = async (req, res) => {
+    try {
+      const courseId = req.params.id;
+      const course = await courses.findById(courseId)
+        .populate('category', 'name') // optional
+        .populate('mentorIds', 'name email'); // optional
+  
+      if (!course) {
+        return res.status(404).json({ message: "Course not found" });
+      }
+  
+      res.status(200).json({ course });
+    } catch (error) {
+      console.error("Error fetching course by ID:", error);
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
+  };
+  
   
 
-  module.exports = { home, about, contact, courseCards };
+  module.exports = { home, about, contact, courseCards,getCourseById };
