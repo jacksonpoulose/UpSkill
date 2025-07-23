@@ -10,6 +10,7 @@ import ResetPassword from "./pages/common/ResetPassword";
 import CoursesPage from "./pages/common/CoursePage";
 import CourseDetailsPage from "./pages/common/CourseDetailsPage";
 import StudentRegistrationPage from "./pages/common/StudentRegistration";
+import ProfilePage from "./pages/common/ProfilePage";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -47,6 +48,7 @@ const App = () => {
       <Route path="/courses" element={<CoursesPage />} />
       <Route path="/courses/:id" element={<CourseDetailsPage />} />
       <Route path="/student/register/:courseId" element={<StudentRegistrationPage />} />
+      <Route path="/profile" element={<ProfilePage/>}/>
 
       {/* Admin Routes */}
       <Route path="/admin" element={<AdminDashboard />} />

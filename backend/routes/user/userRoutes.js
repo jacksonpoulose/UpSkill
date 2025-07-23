@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const{getCurrentUserProfile}=require("../../controllers/user/userController")
+const{getCurrentUserProfile,editProfileController}=require("../../controllers/user/userController")
 const { mentorRegistration } = require("../../controllers/user/mentorRegistration");
 const {
   studentRegistration,
@@ -17,4 +17,6 @@ router.post("/studentregistration", studentRegistration);
 router.get("/payment", getPayment);
 router.post("/create-payment-intent", postPayment);
 router.get('/me',verifyToken,getCurrentUserProfile)
+router.put('/me',verifyToken,editProfileController)
+
 module.exports = router;
