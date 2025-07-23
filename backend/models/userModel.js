@@ -21,6 +21,9 @@ const userSchema = new mongoose.Schema(
     gender: { type: String },
     dateOfBirth: { type: Date },
     isActive: { type: Boolean, default: true },
+    isEmailVerified: { type: Boolean, default: false },
+    emailVerificationToken: { type: String },
+    emailVerificationTokenExpiresAt: { type: Date },
   },
   {
     timestamps: true,

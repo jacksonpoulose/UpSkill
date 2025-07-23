@@ -112,7 +112,7 @@ const Home = () => {
                   size="lg"
                   className="bg-white text-red-700 hover:bg-gray-100"
                   as={Link}
-                  to="/register"
+                  to="/to register"
                   rightIcon={<ChevronRight size={18} />}
                 >
                   Get Started

@@ -3,12 +3,15 @@ const JWT = require("jsonwebtoken");
 const { hashPassword, comparePassword } = require("../utils/authUtil");
 const loginValidation = require("../validations/loginValidation.js");
 const registerValidation = require("../validations/registerValidation");
-const sendEmail = require("../utils/sendEmail.js");
+const {sendEmail,generateEmailVerificationToken} = require("../utils/sendEmail.js");
+
+
+
 
 const registerController = async (req, res) => {
   try {
     const { name, email, password, confirmPassword } = req.body;
-    console.log(req.body);
+   
     const { error } = registerValidation(req.body);
     if (error) return res.status(400).json({ message: error.details[0].message });
     const existingUser = await User.findOne({ email });
@@ -20,17 +23,36 @@ const registerController = async (req, res) => {
       });
     }
 
+
+
     const hashedPassword = await hashPassword(password);
+    const emailVerificationToken = generateEmailVerificationToken();
+    const emailVerificationTokenExpiresAt = Date.now() + 1000 * 60 * 60 * 24;
+
+    console.log(emailVerificationToken);
 
     const user = await new User({
       name,
       email,
       password: hashedPassword,
+      emailVerificationToken,
+      emailVerificationTokenExpiresAt,
     }).save();
+
+    const verificationUrl = `${process.env.BACKEND_URL}/api/v1/auth/verify-email?token=${emailVerificationToken}`;
+
+    await sendEmail({
+      to: email,
+      subject: "Email Verification",
+      html: `<p>Hello ${name},</p>
+      <p>Please verify your email by clicking the link below:</p>
+      <a href="${verificationUrl}">${verificationUrl}</a>
+      <p>This link will expire in 24 hours.</p>`,
+    });
 
     res.status(201).send({
       success: true,
-      message: "User Registered successfully",
+      message: "User Registered successfully,  Please check your email to verify your account.",
       user,
     });
   } catch (error) {
@@ -42,6 +64,58 @@ const registerController = async (req, res) => {
     });
   }
 };
+
+
+
+const verifyEmailController = async (req, res) => {
+  try {
+    const { token } = req.query;
+
+    console.log("Received token:", token);
+
+    if (!token) {
+      return res.status(400).send({
+        success: false,
+        message: "Token is missing",
+      });
+    }
+
+    const user = await User.findOne({ emailVerificationToken: token });
+
+    if (!user) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid token",
+      });
+    }
+
+    if (user.emailVerificationTokenExpiresAt < Date.now()) {
+      return res.status(400).send({
+        success: false,
+        message: "Token has expired",
+      });
+    }
+
+   
+    user.isEmailVerified = true;
+    user.emailVerificationToken = undefined;
+    user.emailVerificationTokenExpiresAt = undefined;
+
+    await user.save();
+
+    res.send({
+      success: true,
+      message: "Email verified successfully. You can now log in.",
+    });
+  } catch (error) {
+    console.error("Error in verifyEmailController:", error);
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
 
 const loginController = async (req, res) => {
   try {
@@ -113,7 +187,7 @@ const forgotPasswordController = async (req, res) => {
     });
 
     console.log("CLIENT_URL from env:", process.env.CLIENT_URL);
-    // const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${token}`;
+    
     const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${encodeURIComponent(token)}`;
 
     console.log("CLIENT_URL inside forgotPasswordController:", process.env.CLIENT_URL);
@@ -179,4 +253,5 @@ module.exports = {
   logoutController,
   forgotPasswordController,
   resetPasswordController,
-};
+  verifyEmailController,
+  };
