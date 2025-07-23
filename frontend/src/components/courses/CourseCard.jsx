@@ -1,14 +1,14 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Clock, Users, Star, BookOpen } from 'lucide-react';
-import Card from '../common/Card';
-import Button from '../common/Button';
+import React from "react";
+import { Link } from "react-router-dom";
+import { Clock, Users, Star, BookOpen } from "lucide-react";
+import Card from "../common/Card";
+import Button from "../common/Button";
 
-const CourseCard = ({ course }) => {
+const CourseCard = ({ course,onEnrollNow, onViewDetails }) => {
   const formatPrice = (price) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
       maximumFractionDigits: 0,
     }).format(price);
   };
@@ -20,13 +20,13 @@ const CourseCard = ({ course }) => {
           src={
             course.courseImage
               ? `http://localhost:3000/uploads/courses/${course.courseImage}`
-              : 'https://images.pexels.com/photos/4050315/pexels-photo-4050315.jpeg?auto=compress&cs=tinysrgb&w=800'
+              : "https://images.pexels.com/photos/4050315/pexels-photo-4050315.jpeg?auto=compress&cs=tinysrgb&w=800"
           }
           alt={course.title}
           className="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
           onError={(e) => {
             e.target.src =
-              'https://images.pexels.com/photos/4050315/pexels-photo-4050315.jpeg?auto=compress&cs=tinysrgb&w=800';
+              "https://images.pexels.com/photos/4050315/pexels-photo-4050315.jpeg?auto=compress&cs=tinysrgb&w=800";
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -51,7 +51,9 @@ const CourseCard = ({ course }) => {
                 {course.rating.toFixed(1)}
               </span>
               {course.reviews && (
-                <span className="text-sm text-gray-500">({course.reviews})</span>
+                <span className="text-sm text-gray-500">
+                  ({course.reviews})
+                </span>
               )}
             </div>
           )}
@@ -99,7 +101,10 @@ const CourseCard = ({ course }) => {
                 )}
               </div>
               <span className="text-sm text-gray-600 ml-2">
-                {course.mentorIds.slice(0, 2).map((m) => m.name).join(', ')}
+                {course.mentorIds
+                  .slice(0, 2)
+                  .map((m) => m.name)
+                  .join(", ")}
                 {course.mentorIds.length > 2 &&
                   ` +${course.mentorIds.length - 2} more`}
               </span>
@@ -111,19 +116,21 @@ const CourseCard = ({ course }) => {
           <Button
             variant="outline"
             size="sm"
-            as={Link}
-            to={`/courses/${course._id}`}
-            className="flex-1 border-gray-300 text-gray-700 hover:border-red-500 hover:text-red-600"
-            leftIcon={<BookOpen className="h-4 w-4" />}
+            className="..."
+            onClick={(e) => {
+              e.stopPropagation(); // just in case
+              onViewDetails();
+            }}
           >
             View Details
           </Button>
+
           <Button
             variant="red"
             size="sm"
-            className="flex-1 shadow-sm hover:shadow-md transition-shadow"
-            onClick={() => {
-              console.log('Enroll in course:', course._id);
+            onClick={(e) => {
+              e.stopPropagation(); // prevent accidental card click if added later
+              onEnrollNow();
             }}
           >
             Enroll Now

@@ -1,112 +1,129 @@
-import React, { useState, useEffect } from 'react';
-import { BookOpen, TrendingUp, Users } from 'lucide-react';
-import Navbar from '../../components/common/Navbar';
-import CourseCard from '../../components/courses/CourseCard';
-import CourseFilters from '../../components/courses/CourseFilters';
-import PurchaseModal from '../../components/courses/PurchaseModal';
-import axiosInstance from '../../services/axiosInstance';
-
+import React, { useState, useEffect } from "react";
+import { BookOpen, TrendingUp, Users } from "lucide-react";
+import Navbar from "../../components/common/Navbar";
+import CourseCard from "../../components/courses/CourseCard";
+import CourseFilters from "../../components/courses/CourseFilters";
+import PurchaseModal from "../../components/courses/PurchaseModal";
+import axiosInstance from "../../services/axiosInstance";
+import { useNavigate } from "react-router-dom";
 const CoursesPage = () => {
   const [courses, setCourses] = useState([]);
   const [filteredCourses, setFilteredCourses] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [priceRange, setPriceRange] = useState([0, 100000]);
-  const [durationFilter, setDurationFilter] = useState('');
+  const [durationFilter, setDurationFilter] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState('');
-  const [role, setRole] = useState('');
+  const [username, setUsername] = useState("");
+  const [role, setRole] = useState("");
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
-
-  // Fetch courses from backend
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await axiosInstance.get('/common/courses');
+        const res = await axiosInstance.get("/common/courses");
         const fetchedCourses = res.data.courses;
         setCourses(fetchedCourses);
         setFilteredCourses(fetchedCourses);
       } catch (error) {
-        console.error('Error fetching courses:', error);
+        console.error("Error fetching courses:", error);
       }
     };
 
     fetchCourses();
   }, []);
 
-  // Load user info
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
     if (user.name) {
       setIsLoggedIn(true);
       setUsername(user.name);
-      setRole(user.role || '');
+      setRole(user.role || "");
     }
   }, []);
 
-  // Filter logic
   useEffect(() => {
     let filtered = [...courses];
 
     if (searchTerm) {
-      filtered = filtered.filter(course =>
-        course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        course.description.toLowerCase().includes(searchTerm.toLowerCase())
+      filtered = filtered.filter(
+        (course) =>
+          course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          course.description.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     if (selectedCategory) {
-      filtered = filtered.filter(course => course.category.name === selectedCategory);
+      filtered = filtered.filter(
+        (course) => course.category?.name === selectedCategory
+      );
     }
 
     if (durationFilter) {
-      const [min, max] = durationFilter.split('-').map(v => v === '+' ? Infinity : parseInt(v));
-      filtered = filtered.filter(course => {
+      const [min, max] = durationFilter
+        .split("-")
+        .map((v) => (v === "+" ? Infinity : parseInt(v)));
+      filtered = filtered.filter((course) => {
         if (max === Infinity) return course.durationWeeks >= min;
         return course.durationWeeks >= min && course.durationWeeks <= max;
       });
     }
 
-    filtered = filtered.filter(course =>
-      course.courseFee >= priceRange[0] && course.courseFee <= priceRange[1]
+    filtered = filtered.filter(
+      (course) =>
+        course.courseFee >= priceRange[0] && course.courseFee <= priceRange[1]
     );
 
+    console.log("Filtered Courses:", filtered); // Debug log
     setFilteredCourses(filtered);
   }, [courses, searchTerm, selectedCategory, durationFilter, priceRange]);
 
   const handleClearFilters = () => {
-    setSearchTerm('');
-    setSelectedCategory('');
-    setDurationFilter('');
+    setSearchTerm("");
+    setSelectedCategory("");
+    setDurationFilter("");
     setPriceRange([0, 100000]);
   };
 
   const handleEnrollClick = (course) => {
-    setSelectedCourse(course);
-    setShowPurchaseModal(true);
+    navigate(`/student/register/${course._id}`);
   };
 
-  const totalStudents = courses.reduce((sum, course) => sum + (course.studentsEnrolled?.length || 0), 0);
+  const totalStudents = courses.reduce(
+    (sum, course) => sum + (course.studentsEnrolled?.length || 0),
+    0
+  );
   const averageRating =
     courses.length > 0
-      ? (courses.reduce((sum, course) => sum + (course.rating || 0), 0) / courses.length).toFixed(1)
+      ? (
+          courses.reduce((sum, course) => sum + (course.rating || 0), 0) /
+          courses.length
+        ).toFixed(1)
       : 0;
 
-  const categories = Array.from(new Set(courses.map(course => course.category?.name).filter(Boolean)));
+  const categories = Array.from(
+    new Set(courses.map((course) => course.category?.name).filter(Boolean))
+  );
+
+  const filtersActive =
+    searchTerm !== "" ||
+    selectedCategory !== "" ||
+    durationFilter !== "" ||
+    priceRange[0] !== 0 ||
+    priceRange[1] !== 100000;
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      {/* Navbar */}
       <Navbar
         isLoggedIn={isLoggedIn}
         username={username}
         role={role}
         onLogout={() => {
-          localStorage.removeItem('user');
+          localStorage.removeItem("user");
           setIsLoggedIn(false);
-          setUsername('');
-          setRole('');
+          setUsername("");
+          setRole("");
         }}
       />
 
@@ -114,12 +131,14 @@ const CoursesPage = () => {
       <section className="bg-gradient-to-br from-red-900 to-red-700 text-white">
         <div className="container mx-auto px-6 py-16">
           <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Explore Our Courses</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              Explore Our Courses
+            </h1>
             <p className="text-xl text-red-100 mb-8 max-w-2xl mx-auto">
-              Discover world-class courses taught by industry experts. Start your learning journey today.
+              Discover world-class courses taught by industry experts. Start
+              your learning journey today.
             </p>
 
-            {/* Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
               <div className="text-center">
                 <div className="flex items-center justify-center mb-2">
@@ -166,7 +185,8 @@ const CoursesPage = () => {
         <div className="container mx-auto px-6">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl font-bold text-gray-900">
-              {filteredCourses.length} Course{filteredCourses.length !== 1 ? 's' : ''} Found
+              {filteredCourses.length} Course
+              {filteredCourses.length !== 1 ? "s" : ""} Found
             </h2>
             <div className="text-sm text-gray-600">
               Showing results for your search and filters
@@ -174,17 +194,39 @@ const CoursesPage = () => {
           </div>
 
           {filteredCourses.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredCourses.map((course) => (
-                <div key={course._id} onClick={() => handleEnrollClick(course)}>
-                  <CourseCard course={course} />
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {filteredCourses.map((course) => (
+                  <div
+                    key={course._id}
+                    onClick={() => handleEnrollClick(course)}
+                  >
+                    <CourseCard
+                      course={course}
+                      onViewDetails={() => navigate(`/courses/${course._id}`)}
+                      onEnrollNow={() => handleEnrollClick(course)}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              {filtersActive && (
+                <div className="mt-6 text-center">
+                  <button
+                    onClick={handleClearFilters}
+                    className="text-red-600 hover:text-red-700 font-medium"
+                  >
+                    Clear all filters
+                  </button>
                 </div>
-              ))}
-            </div>
+              )}
+            </>
           ) : (
             <div className="text-center py-12">
               <BookOpen className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No courses found</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                No courses found
+              </h3>
               <p className="text-gray-600 mb-4">
                 Try adjusting your search criteria or browse all courses.
               </p>
