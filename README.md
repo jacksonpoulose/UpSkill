@@ -28,6 +28,7 @@ Unlike traditional online courses, UpSkill focuses on self-learning with guided 
 ⚙️ RESTful APIs – Robust backend supporting dynamic program and user management.
 
 🏗️ Tech Stack
+
 Frontend (by Fathima)
 
 React.js
