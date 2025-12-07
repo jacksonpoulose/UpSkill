@@ -101,12 +101,15 @@ const getPayment = async (req, res) => {
   }
 };
 
-
 const postPayment = async (req, res) => {
   const { courseId } = req.body;
   const userId = req.user?.id;
   const email = req.user?.email;
   const userRole = req.user?.role;
+
+  // 🐛 Debug: Log the received courseId
+  console.log("Received courseId:", courseId, "Type:", typeof courseId, "Length:", courseId?.length);
+  console.log("Full request body:", req.body);
 
   if (!email || !userId) {
     return res.status(400).json({ message: "Missing user credentials" });
@@ -114,6 +117,25 @@ const postPayment = async (req, res) => {
 
   if (userRole !== "guest") {
     return res.status(403).json({ message: "Access denied. Only guests can make payments." });
+  }
+
+  // ✅ Enhanced validation for courseId
+  if (!courseId || typeof courseId !== 'string' || courseId.trim() === "") {
+    return res.status(400).json({ 
+      message: "Course ID is required and must be a valid string",
+      received: courseId,
+      type: typeof courseId
+    });
+  }
+
+  // ✅ Validate ObjectId format
+  const mongoose = require('mongoose');
+  if (!mongoose.Types.ObjectId.isValid(courseId)) {
+    return res.status(400).json({ 
+      message: "Invalid course ID format. Must be a valid MongoDB ObjectId",
+      received: courseId,
+      expectedFormat: "24-character hex string"
+    });
   }
 
   try {
@@ -157,6 +179,64 @@ const postPayment = async (req, res) => {
     res.status(500).json({ message: error.message || "Payment failed" });
   }
 };
+
+// const postPayment = async (req, res) => {
+//   const { courseId } = req.body;
+//   const userId = req.user?.id;
+//   const email = req.user?.email;
+//   const userRole = req.user?.role;
+
+//   if (!email || !userId) {
+//     return res.status(400).json({ message: "Missing user credentials" });
+//   }
+
+//   if (userRole !== "guest") {
+//     return res.status(403).json({ message: "Access denied. Only guests can make payments." });
+//   }
+
+//   try {
+//     // 🔍 Fetch the course and its fee
+//     const course = await Course.findById(courseId);
+//     if (!course || !course.courseFee) {
+//       return res.status(404).json({ message: "Course not found or fee missing" });
+//     }
+//     console.log(course);
+
+
+//     const amountInPaise = course.courseFee * 100; // INR to paise
+
+//     const session = await stripe.checkout.sessions.create({
+//       payment_method_types: ["card"],
+//       mode: "payment",
+//       line_items: [
+//         {
+//           price_data: {
+//             currency: "inr",  // ✅ Set currency to INR
+//             product_data: {
+//               name: course.title,
+//               description: course.description,
+//             },
+//             unit_amount: amountInPaise,
+//           },
+//           quantity: 1,
+//         },
+//       ],
+//       metadata: {
+//         userId,
+//         email,
+//         courseId,
+//       },
+//       customer_email: email,
+//       success_url: `${process.env.CLIENT_URL}/payment/success`,
+//       cancel_url: `${process.env.CLIENT_URL}/payment/failure`,
+//     });
+
+//     res.send({ url: session.url });
+//   } catch (error) {
+//     console.error("Stripe error:", error);
+//     res.status(500).json({ message: error.message || "Payment failed" });
+//   }
+// };
 
 
 module.exports = { studentRegistration, getPayment, postPayment };

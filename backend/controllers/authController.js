@@ -103,10 +103,7 @@ const verifyEmailController = async (req, res) => {
 
     await user.save();
 
-    res.send({
-      success: true,
-      message: "Email verified successfully. You can now log in.",
-    });
+    res.redirect(`${process.env.CLIENT_URL}`);
   } catch (error) {
     console.error("Error in verifyEmailController:", error);
     res.status(500).send({
