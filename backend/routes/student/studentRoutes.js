@@ -7,6 +7,7 @@ const {
   updateProfile,
   getMentorDetails,
 } = require("../../controllers/student/studentController");
+const { getCourseTracker } = require("../../controllers/student/coursetracker");
 const { verifyToken, checkRole } = require("../../middlewares/authMiddleware");
 
 router.use(verifyToken, checkRole(["student"]));
@@ -17,5 +18,7 @@ router.get("/tasksheet", getTasksheet);
 router.get("/profile", getProfilePage);
 router.put("/profile", updateProfile);
 router.get("/mentor", getMentorDetails);
+router.get("/coursetracker", getCourseTracker);
+
 
 module.exports = router;

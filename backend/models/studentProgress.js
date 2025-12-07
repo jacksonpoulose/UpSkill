@@ -1,23 +1,28 @@
 const mongoose = require('mongoose');
 
-// Sub-schema for each week's progress
+
 const weekProgressSchema = new mongoose.Schema({
   weekNumber: {
     type: Number,
     required: true,
   },
-  completedTaskTitles: [String], // Just the task titles or use task _ids if needed
+  completedTaskTitles: [String],
   mentorFeedback: {
     type: String,
     default: '',
   },
+  pendingTasks: {
+    type: [String],
+    default: [],
+  },
+  
   reviewed: {
     type: Boolean,
     default: false,
   }
 }, { _id: false });
 
-// Main StudentProgress schema
+
 const studentProgressSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
