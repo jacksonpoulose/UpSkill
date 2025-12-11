@@ -11,6 +11,7 @@ import CoursesPage from "./pages/common/CoursePage";
 import CourseDetailsPage from "./pages/common/CourseDetailsPage";
 import StudentRegistrationPage from "./pages/common/StudentRegistration";
 import ProfilePage from "./pages/common/ProfilePage";
+import AboutUs from "./pages/common/AboutUs";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -49,6 +50,7 @@ const App = () => {
       <Route path="/courses/:id" element={<CourseDetailsPage />} />
       <Route path="/student/register/:courseId" element={<StudentRegistrationPage />} />
       <Route path="/profile" element={<ProfilePage/>}/>
+      <Route path="/about" element={<AboutUs />} />
 
       {/* Admin Routes */}
       <Route path="/admin" element={<AdminDashboard />} />

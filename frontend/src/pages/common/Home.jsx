@@ -4,6 +4,7 @@ import { ChevronRight, BookOpen, Users, Award } from 'lucide-react';
 import Button from '../../components/common/Button';
 import Card, { CardBody } from '../../components/common/Card';
 import Navbar from '../../components/common/Navbar';
+import Footer from '../../components/common/Footer';
 
 const Home = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -108,11 +109,11 @@ const Home = () => {
                   Explore Courses
                 </Button>
                 <Button
-                  variant="red"
+                  variant=""
                   size="lg"
-                  className="bg-white text-red-700 hover:bg-gray-100"
+                   className="text-red-700 bg-white hover:bg-red-700 hover:text-white"
                   as={Link}
-                  to="/to register"
+                  to="/signup"
                   rightIcon={<ChevronRight size={18} />}
                 >
                   Get Started
@@ -202,7 +203,7 @@ const Home = () => {
                 ))}
               </div>
               <div className="mt-10">
-                <Button variant="red" size="lg" as={Link} to="/register">
+                <Button variant="red" className="border-white text-white hover:text-white bg-red-100" size="lg" as={Link} to="/register">
                   Start Learning Today
                 </Button>
               </div>
@@ -219,6 +220,8 @@ const Home = () => {
           </div>
         </div>
       </section>
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };

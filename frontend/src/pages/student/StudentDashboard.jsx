@@ -14,6 +14,7 @@ import CourseCard from '../../components/dashboard/CourseCard';
 import AssignmentCard from '../../components/dashboard/AssignmentCard';
 import MentorCard from '../../components/dashboard/MentorCard';
 import UpcomingScheduleCard from '../../components/dashboard/UpcomingScheduleCard';
+import Navbar from '../../components/common/Navbar';
 
 const StudentDashboard= () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
@@ -128,7 +129,10 @@ const StudentDashboard= () => {
   };
   
   return (
+    <div>
+     
     <div className="flex h-screen bg-gray-50">
+      
       {/* Sidebar */}
       {(sidebarOpen || !isMobile) && (
         <div className={`${isMobile ? 'fixed inset-0 z-40 flex' : 'relative'}`}>
@@ -254,6 +258,7 @@ const StudentDashboard= () => {
           </div>
         </main>
       </div>
+    </div>
     </div>
   );
 };
