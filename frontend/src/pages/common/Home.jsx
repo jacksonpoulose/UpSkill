@@ -5,6 +5,7 @@ import Button from '../../components/common/Button';
 import Card, { CardBody } from '../../components/common/Card';
 import Navbar from '../../components/common/Navbar';
 import Footer from '../../components/common/Footer';
+import Testimonial from '../../components/common/Testimonial';
 
 const Home = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -74,8 +75,8 @@ const Home = () => {
       </div>
 
       {/* Navbar */}
-      <Navbar 
-        isLoggedIn={isLoggedIn} 
+      <Navbar
+        isLoggedIn={isLoggedIn}
         username={username}
         role={role}
         onLogout={() => {
@@ -111,9 +112,9 @@ const Home = () => {
                 <Button
                   variant=""
                   size="lg"
-                   className="text-red-700 bg-white hover:bg-red-700 hover:text-white"
+                  className="text-red-700 bg-white hover:bg-red-700 hover:text-white"
                   as={Link}
-                  to="/signup"
+                  to="/login"
                   rightIcon={<ChevronRight size={18} />}
                 >
                   Get Started
@@ -203,7 +204,7 @@ const Home = () => {
                 ))}
               </div>
               <div className="mt-10">
-                <Button variant="red" className="border-white text-white hover:text-white bg-red-100" size="lg" as={Link} to="/register">
+                <Button variant="red" className="border-white text-white hover:text-white bg-red-100" size="lg" as={Link} to="/login">
                   Start Learning Today
                 </Button>
               </div>
@@ -220,6 +221,7 @@ const Home = () => {
           </div>
         </div>
       </section>
+      <Testimonial/>
       {/* Footer */}
       <Footer />
     </div>

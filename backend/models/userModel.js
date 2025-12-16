@@ -2,14 +2,22 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true }, // Hashed
+    name: { type: String },
+    email: { type: String, unique: true },
+    password: { type: String },
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true
+    },
+    avatar: {
+      type: String,
+      default: ""
+    },
     role: {
       type: String,
-      enum: ["guest","admin", "student", "mentor"],
+      enum: ["guest", "admin", "student", "mentor"],
       default: "guest",
-      required: true,
     },
     profilePicture: { type: String },
     phone: { type: String },

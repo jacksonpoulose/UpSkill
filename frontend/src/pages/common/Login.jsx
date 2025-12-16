@@ -12,7 +12,7 @@ import Logo from '../../components/common/Logo';
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error, userInfo } = useSelector((state) => state.user); 
+  const { loading, error, userInfo } = useSelector((state) => state.user);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -57,7 +57,7 @@ const Login = () => {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleLogin}>
-          {error && <p className="text-red-600 text-center">{error}</p>}
+            {error && <p className="text-red-600 text-center">{error}</p>}
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -141,7 +141,7 @@ const Login = () => {
               <Button
                 variant="outline"
                 className="w-full"
-                onClick={() => window.location.href = "http://localhost:3000/api/v1/auth/google"}
+                onClick={() => window.location.href = "http://localhost:5000/api/v1/auth/google"}
               >
                 Google
               </Button>
