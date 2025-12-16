@@ -536,7 +536,7 @@ const AdminDashboard = () => {
                   <p className="text-sm text-slate-600">Monthly overview of student activity</p>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <select 
+                  <select
                     value={timeRange}
                     onChange={(e) => setTimeRange(e.target.value)}
                     className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -587,7 +587,7 @@ const AdminDashboard = () => {
                 </div>
               </div>
               <div className="h-64">
-                <Bar data={revenueData} options={{...chartOptions, plugins: {...chartOptions.plugins, legend: {display: false}}}} />
+                <Bar data={revenueData} options={{ ...chartOptions, plugins: { ...chartOptions.plugins, legend: { display: false } } }} />
               </div>
             </div>
 
@@ -634,8 +634,8 @@ const AdminDashboard = () => {
                   <button className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors duration-200">
                     <Filter className="h-4 w-4" />
                   </button>
-                  <Link 
-                    to="/admin/courses" 
+                  <Link
+                    to="/admin/courses"
                     className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-medium"
                   >
                     View All Courses
@@ -695,8 +695,8 @@ const AdminDashboard = () => {
                       <td className="px-6 py-4">
                         <div className="flex items-center">
                           <div className="w-16 bg-slate-200 rounded-full h-2 mr-2">
-                            <div 
-                              className="bg-emerald-500 h-2 rounded-full" 
+                            <div
+                              className="bg-emerald-500 h-2 rounded-full"
                               style={{ width: `${course.completion}%` }}
                             ></div>
                           </div>

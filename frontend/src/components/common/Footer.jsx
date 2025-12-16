@@ -4,7 +4,7 @@ import { SiInstagram, SiFacebook, SiGithub } from "react-icons/si";
 
 const Footer = () => {
   return (
-    <div className="bg-red-500 justify-center items-center p-4 mt-8">
+    <div className="bg-red-900 justify-center items-center p-4 mt-8">
       <div className="flex text-white justify-center p-4 mt-4 gap-10 md:gap-50 flex-wrap">
         <div>
           <p className="text-bold">Company</p>
