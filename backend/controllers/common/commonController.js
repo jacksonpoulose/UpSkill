@@ -1,4 +1,6 @@
 const courses = require('../../models/course/course')
+const Testimonial = require("../../models/testimonial/testimonial");
+
 
 
 const home = (req, res) => {
@@ -41,6 +43,22 @@ const home = (req, res) => {
     }
   };
   
+  const getTestimonials = async (req, res) => {
+  try {
+    const testimonials = await Testimonial.find({ status: true })
+      .sort({ priority: 1 })
+      .select("name designation description videoLink profileImage priority");
+
+    res.status(200).json({ testimonials });
+  } catch (error) {
+    console.error("Error fetching testimonials:", error);
+    res.status(500).json({
+      message: "Error fetching testimonials",
+      error: error.message,
+    });
+  }
+};
+
   
 
-  module.exports = { home, about, contact, courseCards,getCourseById };
+  module.exports = { home, about, contact, courseCards,getCourseById, getTestimonials };

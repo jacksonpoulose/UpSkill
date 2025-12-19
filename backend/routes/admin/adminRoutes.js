@@ -18,7 +18,14 @@ const {
   toggleCategoryStatus,
   getCategories,
 } = require("../../controllers/admin/categoryController");
-
+const {
+  createTestimonial,
+  getAllTestimonials,
+  getTestimonialById,
+  updateTestimonial,
+  deleteTestimonial,
+  toggleTestimonialStatus,
+} = require("../../controllers/admin/testimonialController");
 const { getNotifications, postNotification } = require("../../controllers/admin/notifications");
 
 const { getMentors, getIndividualMentor } = require("../../controllers/admin/mentorController");
@@ -50,6 +57,27 @@ router.post("/category/add", postAddCategory);
 router.put("/category/:id/edit", postEditCategory);
 router.patch("/category/:id/toggle", toggleCategoryStatus);
 
+
+// Testimonials
+router.get("/testimonials", getAllTestimonials);
+
+router.post(
+  "/testimonials/add",
+  upload.single("profileImage"),
+  createTestimonial
+);
+
+router.get("/testimonials/:id", getTestimonialById);
+
+router.put(
+  "/testimonials/:id/edit",
+  upload.single("profileImage"),
+  updateTestimonial
+);
+
+router.delete("/testimonials/:id", deleteTestimonial);
+
+router.patch("/testimonials/:id/toggle", toggleTestimonialStatus);
 
 router.post("/courses/add", upload.single("courseImage"), postAddCourse);
 router.put("/courses/:id/edit", upload.single("courseImage"), postEditCourse);
